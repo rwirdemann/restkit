@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"text/template"
 )
 
 var name string
@@ -41,6 +42,21 @@ var initCmd = &cobra.Command{
 			}
 		} else {
 			log.Printf("Project '%s' exists\n", path)
+		}
+
+		temp, err := template.ParseGlob("templates/*")
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		data := struct {
+			Project string
+		}{
+			Project: args[0],
+		}
+		err = temp.ExecuteTemplate(os.Stdout, "go.mod", data)
+		if err != nil {
+			log.Fatalln(err)
 		}
 	},
 }
