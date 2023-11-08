@@ -35,7 +35,7 @@ var initCmd = &cobra.Command{
 		log.Printf("RESTKIT_ROOT: %s\n", root)
 		path := root + args[0]
 		if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-			log.Printf("Preating project '%s'...\n", path)
+			log.Printf("Creating project '%s'...\n", path)
 			err := os.Mkdir(path, os.ModePerm)
 			if err != nil {
 				log.Println(err)
@@ -54,7 +54,9 @@ var initCmd = &cobra.Command{
 		}{
 			Project: args[0],
 		}
-		err = temp.ExecuteTemplate(os.Stdout, "go.mod", data)
+		gomod, _ := os.Create(fmt.Sprintf("%s/go.mod", path))
+		defer gomod.Close()
+		err = temp.ExecuteTemplate(gomod, "go.mod.txt", data)
 		if err != nil {
 			log.Fatalln(err)
 		}
