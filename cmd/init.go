@@ -60,6 +60,14 @@ var initCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalln(err)
 		}
+
+		gomain, _ := os.Create(fmt.Sprintf("%s/main.go", path))
+		defer gomain.Close()
+		err = temp.ExecuteTemplate(gomain, "main.go.txt", data)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
 	},
 }
 
