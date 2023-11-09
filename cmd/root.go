@@ -3,7 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/rwirdemann/restkit/create"
+	"github.com/rwirdemann/restkit/remove"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
 )
 
@@ -38,6 +40,12 @@ var createCmd = &cobra.Command{
 	Short: "Creates the project",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		create.Execute(args[0])
+		if err := remove.Execute(args[0]); err != nil {
+			log.Panicf("Fatal error %s", err)
+		}
+
+		if err := create.Execute(args[0]); err != nil {
+			log.Panicf("Fatal error %s", err)
+		}
 	},
 }
