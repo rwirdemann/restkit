@@ -16,8 +16,15 @@ func init() {
 func TestCreate(t *testing.T) {
 	root := viper.GetString("RESTKIT_ROOT")
 	name := viper.GetString("PROJECT_NAME")
+
 	projectRoot := fmt.Sprintf("%s/%s", root, name)
-	assert.True(t, exist(projectRoot), "does not exist: "+projectRoot)
+	assertExists(t, projectRoot)
+	assertExists(t, fmt.Sprintf("%s/%s", projectRoot, "go.mod"))
+	assertExists(t, fmt.Sprintf("%s/%s", projectRoot, "main.go"))
+}
+
+func assertExists(t *testing.T, file string) {
+	assert.True(t, exist(file), "does not exist: "+file)
 }
 
 func exist(file string) bool {
