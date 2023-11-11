@@ -1,8 +1,8 @@
 package add
 
 import (
-	"errors"
 	"fmt"
+	"github.com/rwirdemann/restkit/io"
 	"log"
 	"os"
 	"text/template"
@@ -10,9 +10,13 @@ import (
 )
 
 func Execute(resourceName string) error {
-	createIfNotExits("adapter")
+	if err := io.CreateDirectoryIfNotExits("adapter"); err != nil {
+		return err
+	}
 	httpDir := fmt.Sprintf("%s%c%s", "adapter", os.PathSeparator, "http")
-	createIfNotExits(httpDir)
+	if err := io.CreateDirectoryIfNotExits(httpDir); err != nil {
+		return err
+	}
 
 	temp, err := template.ParseGlob("../restkit/templates/*")
 	if err != nil {
@@ -33,18 +37,6 @@ func Execute(resourceName string) error {
 	}
 
 	return nil
-}
-
-func createIfNotExits(name string) {
-	if _, err := os.Stat(name); errors.Is(err, os.ErrNotExist) {
-		log.Printf("create: %s...ok\n", name)
-		err := os.Mkdir(name, os.ModePerm)
-		if err != nil {
-			log.Println(err)
-		}
-	} else {
-		log.Printf("dir '%s' exists\n", name)
-	}
 }
 
 func capitalize(str string) string {
