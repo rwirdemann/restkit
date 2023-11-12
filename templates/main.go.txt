@@ -1,5 +1,17 @@
 package main
 
+import (
+	"fmt"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
+)
+
 func main() {
-	println("Hello, {{.Project}}")
+	println("starting http service for project {{.Project}}...")
+	router := mux.NewRouter()
+	err := http.ListenAndServe(fmt.Sprintf(":%s", "8080"), router)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
