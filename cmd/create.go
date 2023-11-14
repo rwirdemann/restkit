@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/rwirdemann/restkit/io"
 	"github.com/rwirdemann/restkit/remove"
@@ -26,27 +25,22 @@ var createCmd = &cobra.Command{
 			log.Panicf("Fatal error %s", err)
 		}
 
-		if err := execute(args[0]); err != nil {
+		if err := create(args[0]); err != nil {
 			log.Panicf("Fatal error %s", err)
 		}
 	},
 }
 
-func execute(name string) error {
+func create(name string) error {
 	root, err := io.RKRoot()
 	if err != nil {
 		return err
 	}
 
 	path := root + name
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		log.Printf("create: %s...ok\n", path)
-		err := os.Mkdir(path, os.ModePerm)
-		if err != nil {
-			log.Println(err)
-		}
-	} else {
-		log.Printf("project '%s' exists\n", path)
+	err = io.CreateDirectoryIfNotExits(path)
+	if err != nil {
+		return err
 	}
 
 	temp, err := template.ParseGlob("templates/*")
