@@ -1,8 +1,10 @@
-package create
+package cmd
 
 import (
 	"errors"
 	"fmt"
+	"github.com/rwirdemann/restkit/remove"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -10,7 +12,28 @@ import (
 	"text/template"
 )
 
-func Execute(name string) error {
+func init() {
+	createCmd.Flags().StringVar(&name, "name", "", "project name")
+	rootCmd.AddCommand(createCmd)
+}
+
+var name string
+var createCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Creates the project",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if err := remove.Execute(args[0]); err != nil {
+			log.Panicf("Fatal error %s", err)
+		}
+
+		if err := execute(args[0]); err != nil {
+			log.Panicf("Fatal error %s", err)
+		}
+	},
+}
+
+func execute(name string) error {
 	root := viper.GetString("RESTKIT_ROOT")
 	if len(root) == 0 {
 		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
