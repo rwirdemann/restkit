@@ -36,6 +36,14 @@ func Execute(resourceName string) error {
 		log.Fatalln(err)
 	}
 
+	// Insert create http handler fragment into main file
+	err = io.InsertFragment("main.go",
+		"err := http.ListenAndServe(fmt.Sprintf(\":%s\", \"8080\"), router)",
+		"    createHandler()")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	return nil
 }
 

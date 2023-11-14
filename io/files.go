@@ -2,6 +2,7 @@ package io
 
 import (
 	"errors"
+	arrays "github.com/rwirdemann/restkit/arrays"
 	"io"
 	"log"
 	"os"
@@ -20,6 +21,7 @@ func CreateDirectoryIfNotExits(name string) error {
 	return nil
 }
 
+// ReadLines reads the contents of filename into an array of strings.
 func ReadLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -32,4 +34,29 @@ func ReadLines(filename string) ([]string, error) {
 	}
 	lines := strings.Split(string(data), "\n")
 	return lines, nil
+}
+
+func InsertFragment(filename string, before string, fragment string) error {
+	lines, err := ReadLines(filename)
+	if err != nil {
+		return err
+	}
+	inserted, err := arrays.Insert(lines, before, fragment)
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	for _, line := range inserted {
+		_, err := f.WriteString(line + "\n")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
