@@ -1,13 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/rwirdemann/restkit/io"
 	"github.com/rwirdemann/restkit/remove"
 	"github.com/spf13/cobra"
 	"log"
-	"os"
-	"text/template"
 )
 
 func init() {
@@ -43,28 +40,14 @@ func create(name string) error {
 		return err
 	}
 
-	temp, err := template.ParseGlob("templates/*")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	data := struct {
 		Project string
 	}{
 		Project: name,
 	}
-	gomod, _ := os.Create(fmt.Sprintf("%s/go.mod", path))
-	defer gomod.Close()
-	err = temp.ExecuteTemplate(gomod, "go.mod.txt", data)
+	err = io.Create("go.mod.txt", "go.mod", path, data)
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
-
-	gomain, _ := os.Create(fmt.Sprintf("%s/main.go", path))
-	defer gomain.Close()
-	err = temp.ExecuteTemplate(gomain, "main.go.txt", data)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return nil
+	return io.Create("main.go.txt", "main.go", path, data)
 }
