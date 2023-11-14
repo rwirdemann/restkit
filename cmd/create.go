@@ -3,12 +3,11 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/rwirdemann/restkit/io"
 	"github.com/rwirdemann/restkit/remove"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
 	"os"
-	"strings"
 	"text/template"
 )
 
@@ -34,18 +33,9 @@ var createCmd = &cobra.Command{
 }
 
 func execute(name string) error {
-	root := viper.GetString("RESTKIT_ROOT")
-	if len(root) == 0 {
-		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
-	}
-
-	if _, err := os.Stat(root); errors.Is(err, os.ErrNotExist) {
-		fmt.Fprintf(os.Stderr, "Root directory %s does not exist", root)
-		os.Exit(1)
-	}
-
-	if !strings.HasSuffix(root, string(os.PathSeparator)) {
-		root = fmt.Sprintf("%s%s", root, string(os.PathSeparator))
+	root, err := io.RKRoot()
+	if err != nil {
+		return err
 	}
 
 	path := root + name
