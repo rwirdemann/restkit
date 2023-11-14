@@ -21,6 +21,22 @@ func CreateDirectoryIfNotExits(name string) error {
 	return nil
 }
 
+func Remove(name string) error {
+	root, err := RKRoot()
+	if err != nil {
+		return err
+	}
+	path := root + name
+	if _, err := os.Stat(path); err == nil {
+		if err := os.RemoveAll(path); err != nil {
+			return err
+		}
+		log.Printf("remove: %s...ok\n", path)
+	}
+
+	return nil
+}
+
 // ReadLines reads the contents of filename into an array of strings.
 func ReadLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)
