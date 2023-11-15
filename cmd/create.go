@@ -1,19 +1,12 @@
 package cmd
 
 import (
-	"github.com/rwirdemann/restkit/adapter"
 	"github.com/rwirdemann/restkit/io"
-	"github.com/rwirdemann/restkit/ports"
 	"github.com/spf13/cobra"
 	"log"
 )
 
-var fileSystem ports.FileSystem
-var env ports.Env
-
 func init() {
-	env = adapter.Env{}
-
 	createCmd.Flags().StringVar(&name, "name", "", "project name")
 	rootCmd.AddCommand(createCmd)
 }
@@ -41,9 +34,13 @@ func create(name string) error {
 	}
 
 	path := root + name
-	err = io.CreateDirectoryIfNotExits(path)
-	if err != nil {
-		return err
+	if fileSystem.Exists(path) {
+		log.Printf("create: directory '%s' exists\n", path)
+	} else {
+		log.Printf("create: %s...ok\n", path)
+		if err := fileSystem.CreateDir(path); err != nil {
+			return err
+		}
 	}
 
 	data := struct {
@@ -51,9 +48,9 @@ func create(name string) error {
 	}{
 		Project: name,
 	}
-	err = io.Create("go.mod.txt", "go.mod", path, data)
+	err = template.Create("go.mod.txt", "go.mod", path, data)
 	if err != nil {
 		return err
 	}
-	return io.Create("main.go.txt", "main.go", path, data)
+	return template.Create("main.go.txt", "main.go", path, data)
 }

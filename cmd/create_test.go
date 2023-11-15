@@ -8,7 +8,12 @@ import (
 func TestCreateProjectDirectory(t *testing.T) {
 	mockEnv := ports.NewMockEnv(t)
 	env = mockEnv
-	mockEnv.EXPECT().RKRoot().Return("/github.com/rwirdemann", nil)
+	mockFileSystem := ports.NewMockFileSystem(t)
+	fileSystem = mockFileSystem
+
+	mockEnv.EXPECT().RKRoot().Return("/github.com/rwirdemann/", nil)
+	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore").Return(false)
+	mockFileSystem.EXPECT().CreateDir("/github.com/rwirdemann/bookstore").Return(nil)
 
 	create("bookstore")
 }

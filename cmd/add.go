@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"text/template"
 	"unicode"
 )
 
@@ -38,20 +37,15 @@ func add(resourceName string) error {
 		return err
 	}
 
-	temp, err := template.ParseGlob("../restkit/templates/*")
-	if err != nil {
-		log.Fatalln(err)
-	}
 	data := struct {
 		Resource string
 	}{
 		Resource: capitalize(resourceName),
 	}
-	resourceFileName := fmt.Sprintf("%s/%s_handler.go", httpDir, resourceName)
-	resourceFile, _ := os.Create(resourceFileName)
-	defer resourceFile.Close()
-	log.Printf("create: %s...ok\n", resourceFileName)
-	err = temp.ExecuteTemplate(resourceFile, "resource_handler.go.txt", data)
+
+	resourceFileName := fmt.Sprintf("%s_handler.go", resourceName)
+	log.Printf("create: %s/%s...ok\n", httpDir, resourceFileName)
+	err := template.Create("resource_handler.go.txt", resourceFileName, httpDir, data)
 	if err != nil {
 		log.Fatalln(err)
 	}

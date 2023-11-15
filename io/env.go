@@ -28,3 +28,14 @@ func RKRoot() (string, error) {
 
 	return root, nil
 }
+
+func RKTemplatePath() (string, error) {
+	p := viper.GetString("RESTKIT_TEMPLATES")
+	if len(p) == 0 {
+		return "", fmt.Errorf("env %s not set", "RESTKIT_TEMPLATES")
+	}
+	if !strings.HasSuffix(p, string(os.PathSeparator)) {
+		p = fmt.Sprintf("%s%s", p, string(os.PathSeparator))
+	}
+	return p, nil
+}
