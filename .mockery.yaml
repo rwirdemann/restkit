@@ -1,0 +1,10 @@
+with-expecter: true
+packages:
+  github.com/rwirdemann/restkit/ports:
+    # place your package-specific config here
+    config:
+    interfaces:
+      # select the interfaces you want mocked
+      Env:
+        # Modify package-level config for this specific interface (if applicable)
+        config:
