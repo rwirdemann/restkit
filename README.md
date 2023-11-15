@@ -1,7 +1,7 @@
 # RESTKit
 RESTKit is a simple CLI to generate REST APIs.
 
-https://github.com/rwirdemann/restkit/assets/28768/9f2356b9-0db5-4605-8879-37e3c75577d7
+https://github.com/rwirdemann/restkit/assets/28768/d3e0fb80-6dab-4771-b471-6a21fd1309e9
 
 ## Usage
 ```
