@@ -1,12 +1,19 @@
 package cmd
 
 import (
+	"github.com/rwirdemann/restkit/adapter"
 	"github.com/rwirdemann/restkit/io"
+	"github.com/rwirdemann/restkit/ports"
 	"github.com/spf13/cobra"
 	"log"
 )
 
+var fileSystem ports.FileSystem
+var env ports.Env
+
 func init() {
+	env = adapter.Env{}
+
 	createCmd.Flags().StringVar(&name, "name", "", "project name")
 	rootCmd.AddCommand(createCmd)
 }
@@ -28,7 +35,7 @@ var createCmd = &cobra.Command{
 }
 
 func create(name string) error {
-	root, err := io.RKRoot()
+	root, err := env.RKRoot()
 	if err != nil {
 		return err
 	}
