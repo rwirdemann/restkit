@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/rwirdemann/restkit/io"
 	"github.com/spf13/cobra"
 	"log"
@@ -41,6 +42,11 @@ func create(name string) error {
 		if err := fileSystem.CreateDir(path); err != nil {
 			return err
 		}
+	}
+
+	_, err = fileSystem.CreateFile(fmt.Sprintf("%s/.restkit", path))
+	if err != nil {
+		return err
 	}
 
 	data := struct {

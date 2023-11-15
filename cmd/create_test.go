@@ -14,6 +14,7 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockEnv.EXPECT().RKRoot().Return("/github.com/rwirdemann/", nil)
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore").Return(false)
 	mockFileSystem.EXPECT().CreateDir("/github.com/rwirdemann/bookstore").Return(nil)
+	mockFileSystem.EXPECT().CreateFile("/github.com/rwirdemann/bookstore/.restkit").Return(nil, nil)
 
 	create("bookstore")
 }

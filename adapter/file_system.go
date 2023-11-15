@@ -8,6 +8,10 @@ import (
 type FileSystem struct {
 }
 
+func (f FileSystem) CreateFile(name string) (*os.File, error) {
+	return os.Create(name)
+}
+
 func (f FileSystem) CreateDir(path string) error {
 	return os.Mkdir(path, os.ModePerm)
 }
