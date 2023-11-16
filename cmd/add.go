@@ -27,7 +27,11 @@ var addCmd = &cobra.Command{
 }
 
 func add(resourceName string) error {
-	// check if current directory is project root
+
+	// Check if current directory is a RESTkit's project root
+	if !fileSystem.Exists(".restkit") {
+		return fmt.Errorf("current directory contains no .restkit")
+	}
 
 	if err := io.CreateDirectoryIfNotExits("adapter"); err != nil {
 		return err

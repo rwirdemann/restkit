@@ -44,6 +44,7 @@ func create(name string) error {
 		}
 	}
 
+	log.Printf("create: %s...ok\n", fmt.Sprintf("%s/.restkit", path))
 	_, err = fileSystem.CreateFile(fmt.Sprintf("%s/.restkit", path))
 	if err != nil {
 		return err
