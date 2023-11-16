@@ -9,3 +9,4 @@ packages:
         # Modify package-level config for this specific interface (if applicable)
         config:
       FileSystem:
+      Template:
