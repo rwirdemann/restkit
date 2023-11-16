@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rwirdemann/restkit/io"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -33,12 +32,17 @@ func add(resourceName string) error {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
-	if err := io.CreateDirectoryIfNotExits("adapter"); err != nil {
-		return err
+	if !fileSystem.Exists("adapter") {
+		if err := fileSystem.CreateDir("adapter"); err != nil {
+			return err
+		}
 	}
+
 	httpDir := fmt.Sprintf("%s%c%s", "adapter", os.PathSeparator, "http")
-	if err := io.CreateDirectoryIfNotExits(httpDir); err != nil {
-		return err
+	if !fileSystem.Exists(httpDir) {
+		if err := fileSystem.CreateDir(httpDir); err != nil {
+			return err
+		}
 	}
 
 	data := struct {
@@ -56,7 +60,7 @@ func add(resourceName string) error {
 
 	// Insert create http handler fragment into main file
 	log.Printf("insert: %s...ok\n", "import")
-	err = io.InsertFragment("main.go",
+	err = template.InsertFragment("main.go",
 		"\"net/http\"",
 		"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
 	if err != nil {
@@ -64,7 +68,7 @@ func add(resourceName string) error {
 	}
 
 	log.Printf("insert: %s...ok\n", "http handler")
-	err = io.InsertFragment("main.go",
+	err = template.InsertFragment("main.go",
 		"err := http.ListenAndServe(fmt.Sprintf(\":%s\", \"8080\"), router)",
 		"bookAdapter := http2.NewBookHandler()\n"+
 			"\trouter.HandleFunc(\"/books\", bookAdapter.GetAll()).Methods(\"GET\")\n")
