@@ -5,15 +5,23 @@ https://github.com/rwirdemann/restkit/assets/28768/bd227566-582d-4c83-a8fb-fad46
 
 ## Usage
 ```
-rk create bookstore // generates the project 
-rk add book         // adds the book resource
+restkit create bookstore // generates the project 
+restkit add book         // adds the book resource
 ```
 
 ## Example
 ```bash
-rk create bookstore
+# Create project 
+restkit create bookstore
 cd bookstore
+
+# Add first resource
+restkit add book
+
+# Update dependencies
 go mod tidy
+
+# Start server
 go run main.go
 ```
 
@@ -23,4 +31,7 @@ go run main.go
 ```
 # Root directory where new projects are generated
 RESTKIT_ROOT   
+
+# RESTKit template directory
+RESTKIT_TEMPLATES
 ```
