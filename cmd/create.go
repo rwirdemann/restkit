@@ -55,9 +55,16 @@ func create(name string) error {
 	}{
 		Project: name,
 	}
-	err = template.Create("go.mod.txt", "go.mod", path, data)
-	if err != nil {
-		return err
+
+	gomodFilename := fmt.Sprintf("%s/%s", path, "go.mod")
+	if fileSystem.Exists(gomodFilename) {
+		log.Printf("create: %s...exists\n", gomodFilename)
+	} else {
+		if err := template.Create("go.mod.txt", "go.mod", path, data); err != nil {
+			return err
+		}
+		log.Printf("create: %s...ok\n", gomodFilename)
 	}
+
 	return template.Create("main.go.txt", "main.go", path, data)
 }
