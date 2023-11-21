@@ -56,15 +56,26 @@ func create(name string) error {
 		Project: name,
 	}
 
-	gomodFilename := fmt.Sprintf("%s/%s", path, "go.mod")
-	if fileSystem.Exists(gomodFilename) {
-		log.Printf("create: %s...exists\n", gomodFilename)
-	} else {
-		if err := template.Create("go.mod.txt", "go.mod", path, data); err != nil {
-			return err
-		}
-		log.Printf("create: %s...ok\n", gomodFilename)
+	if err := createIfNotExists(path, data, "go.mod.txt", "go.mod"); err != nil {
+		return err
 	}
 
-	return template.Create("main.go.txt", "main.go", path, data)
+	if err := createIfNotExists(path, data, "main.go.txt", "main.go"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createIfNotExists(path string, data interface{}, tmpl string, out string) error {
+	fn := fmt.Sprintf("%s/%s", path, out)
+	if fileSystem.Exists(fn) {
+		log.Printf("create: %s...exists\n", fn)
+	} else {
+		if err := template.Create(tmpl, out, path, data); err != nil {
+			return err
+		}
+		log.Printf("create: %s...ok\n", fn)
+	}
+	return nil
 }

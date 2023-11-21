@@ -27,6 +27,7 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/go.mod").Return(false)
 	mockTemplate.EXPECT().Create("go.mod.txt", "go.mod", path, data).Return(nil)
 
+	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/main.go").Return(false)
 	mockTemplate.EXPECT().Create("main.go.txt", "main.go", path, data).Return(nil)
 
 	create("bookstore")
