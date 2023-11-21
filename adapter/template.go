@@ -13,6 +13,15 @@ import (
 type Template struct {
 }
 
+func (t Template) Contains(filename string, fragment string) (bool, error) {
+	lines, err := ReadLines(filename)
+	if err != nil {
+		return false, err
+	}
+	index, _ := arrays.Find(lines, fragment)
+	return index > -1, nil
+}
+
 // ReadLines reads the contents of filename into an array of strings.
 func ReadLines(filename string) ([]string, error) {
 	file, err := os.Open(filename)

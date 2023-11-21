@@ -17,6 +17,59 @@ func (_m *MockTemplate) EXPECT() *MockTemplate_Expecter {
 	return &MockTemplate_Expecter{mock: &_m.Mock}
 }
 
+// Contains provides a mock function with given fields: filename, fragment
+func (_m *MockTemplate) Contains(filename string, fragment string) (bool, error) {
+	ret := _m.Called(filename, fragment)
+
+	var r0 bool
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string, string) (bool, error)); ok {
+		return rf(filename, fragment)
+	}
+	if rf, ok := ret.Get(0).(func(string, string) bool); ok {
+		r0 = rf(filename, fragment)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	if rf, ok := ret.Get(1).(func(string, string) error); ok {
+		r1 = rf(filename, fragment)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTemplate_Contains_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Contains'
+type MockTemplate_Contains_Call struct {
+	*mock.Call
+}
+
+// Contains is a helper method to define mock.On call
+//   - filename string
+//   - fragment string
+func (_e *MockTemplate_Expecter) Contains(filename interface{}, fragment interface{}) *MockTemplate_Contains_Call {
+	return &MockTemplate_Contains_Call{Call: _e.mock.On("Contains", filename, fragment)}
+}
+
+func (_c *MockTemplate_Contains_Call) Run(run func(filename string, fragment string)) *MockTemplate_Contains_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockTemplate_Contains_Call) Return(_a0 bool, _a1 error) *MockTemplate_Contains_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTemplate_Contains_Call) RunAndReturn(run func(string, string) (bool, error)) *MockTemplate_Contains_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Create provides a mock function with given fields: templ, out, path, data
 func (_m *MockTemplate) Create(templ string, out string, path string, data interface{}) error {
 	ret := _m.Called(templ, out, path, data)

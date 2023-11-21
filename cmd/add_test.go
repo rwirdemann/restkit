@@ -25,11 +25,12 @@ func TestAddResource(t *testing.T) {
 	}
 	mockTemplate.EXPECT().Create("resource_handler.go.txt", "book_handler.go", "adapter/http", data).Return(nil)
 
+	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\"").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"\"net/http\"",
 		"http2 \"github.com/rwirdemann/bookstore/adapter/http\"").Return(nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
-		"err := http.ListenAndServe(fmt.Sprintf(\":%s\", \"8080\"), router)",
+		"log.Println(\"starting http service on port 8080...\")",
 		"bookAdapter := http2.NewBookHandler()\n"+
 			"\trouter.HandleFunc(\"/books\", bookAdapter.GetAll()).Methods(\"GET\")\n").Return(nil)
 

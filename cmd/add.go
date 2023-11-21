@@ -59,19 +59,30 @@ func add(resourceName string) error {
 	}
 
 	// Insert create http handler fragment into main file
-	log.Printf("insert: %s...ok\n", "import")
-	err = template.InsertFragment("main.go",
-		"\"net/http\"",
-		"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
-	if err != nil {
-		log.Fatalln(err)
+	if contains, _ := template.Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\""); contains {
+		log.Printf("insert: %s...already there\n", "import")
+		err = template.InsertFragment("main.go",
+			"\"net/http\"",
+			"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else {
+		log.Printf("insert: %s...ok\n", "import")
+		err = template.InsertFragment("main.go",
+			"\"net/http\"",
+			"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	log.Printf("insert: %s...ok\n", "http handler")
+	fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
+		"\trouter.HandleFunc(\"/%ss\", %sAdapter.GetAll()).Methods(\"GET\")\n", resourceName, capitalize(resourceName), resourceName, resourceName)
 	err = template.InsertFragment("main.go",
-		"err := http.ListenAndServe(fmt.Sprintf(\":%s\", \"8080\"), router)",
-		"bookAdapter := http2.NewBookHandler()\n"+
-			"\trouter.HandleFunc(\"/books\", bookAdapter.GetAll()).Methods(\"GET\")\n")
+		"log.Println(\"starting http service on port 8080...\")",
+		fragment)
 	if err != nil {
 		log.Fatalln(err)
 	}

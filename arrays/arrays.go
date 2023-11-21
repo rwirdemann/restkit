@@ -6,14 +6,14 @@ import (
 )
 
 func Insert(source []string, before string, fragment string) ([]string, error) {
-	index, err := find(source, before)
+	index, err := Find(source, before)
 	if err != nil {
 		return source, err
 	}
 	return insert(source, index, fragment), nil
 }
 
-func find(a []string, s string) (int, error) {
+func Find(a []string, s string) (int, error) {
 	for i, v := range a {
 		if strings.TrimSpace(v) == s {
 			return i, nil
