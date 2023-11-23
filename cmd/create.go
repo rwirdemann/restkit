@@ -9,15 +9,18 @@ import (
 
 func init() {
 	createCmd.Flags().StringVar(&name, "name", "", "project name")
+	createCmd.Flags().BoolVarP(&force, "force", "f", false, "override existing project")
 	rootCmd.AddCommand(createCmd)
 }
 
 var name string
+var force = false
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Creates the project",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		log.Println("Force: ", force)
 		if err := io.Remove(args[0]); err != nil {
 			log.Panicf("Fatal error %s", err)
 		}
