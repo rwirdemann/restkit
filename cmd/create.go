@@ -2,75 +2,108 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rwirdemann/restkit/io"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
 func init() {
-	createCmd.Flags().StringVar(&name, "name", "", "project name")
 	createCmd.Flags().BoolVarP(&force, "force", "f", false, "override existing project")
 	rootCmd.AddCommand(createCmd)
 }
 
-var name string
 var force = false
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Creates the project",
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("Force: ", force)
-		if err := io.Remove(args[0]); err != nil {
-			log.Panicf("Fatal error %s", err)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		projectName := args[0]
+		restkitRoot, err := env.RKRoot()
+		if err != nil {
+			return err
+		}
+		projectRoot := restkitRoot + projectName
+
+		if force {
+			if fileSystem.Exists(projectRoot) {
+				if err := remove(projectRoot); err != nil {
+					return err
+				}
+			}
 		}
 
-		if err := create(args[0]); err != nil {
-			log.Panicf("Fatal error %s", err)
+		if err := create(projectName, projectRoot); err != nil {
+			return err
 		}
+
+		return nil
 	},
 }
 
-func create(name string) error {
-	root, err := env.RKRoot()
-	if err != nil {
+func remove(projectRoot string) error {
+	if _, err := os.Stat(projectRoot); err == nil {
+		if err := os.RemoveAll(projectRoot); err != nil {
+			return err
+		}
+		log.Printf("remove: %s...ok\n", projectRoot)
+	}
+
+	return nil
+}
+
+func create(projectName string, projectRoot string) error {
+	if err := createDirIfNotExist(projectRoot); err != nil {
 		return err
 	}
 
-	path := root + name
-	if fileSystem.Exists(path) {
-		log.Printf("create: directory '%s' exists\n", path)
-	} else {
-		log.Printf("create: %s...ok\n", path)
-		if err := fileSystem.CreateDir(path); err != nil {
-			return err
-		}
-	}
-
-	log.Printf("create: %s...ok\n", fmt.Sprintf("%s/.restkit", path))
-	_, err = fileSystem.CreateFile(fmt.Sprintf("%s/.restkit", path))
-	if err != nil {
+	restkit := fmt.Sprintf("%s/.restkit", projectRoot)
+	if err := createFileIfNotExist(restkit); err != nil {
 		return err
 	}
 
 	data := struct {
 		Project string
 	}{
-		Project: name,
+		Project: projectName,
 	}
 
-	if err := createIfNotExists(path, data, "go.mod.txt", "go.mod"); err != nil {
+	if err := createTemplateIfNotExists(projectRoot, data, "go.mod.txt", "go.mod"); err != nil {
 		return err
 	}
 
-	if err := createIfNotExists(path, data, "main.go.txt", "main.go"); err != nil {
+	if err := createTemplateIfNotExists(projectRoot, data, "main.go.txt", "main.go"); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func createIfNotExists(path string, data interface{}, tmpl string, out string) error {
+func createDirIfNotExist(path string) error {
+	if fileSystem.Exists(path) {
+		log.Printf("create: %s exists\n", path)
+	} else {
+		log.Printf("create: %s...ok\n", path)
+		if err := fileSystem.CreateDir(path); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func createFileIfNotExist(path string) error {
+	if fileSystem.Exists(path) {
+		log.Printf("create: %s exists\n", path)
+	} else {
+		log.Printf("create: %s...ok\n", path)
+		if _, err := fileSystem.CreateFile(path); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func createTemplateIfNotExists(path string, data interface{}, tmpl string, out string) error {
 	fn := fmt.Sprintf("%s/%s", path, out)
 	if fileSystem.Exists(fn) {
 		log.Printf("create: %s...exists\n", fn)
