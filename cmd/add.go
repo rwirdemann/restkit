@@ -63,15 +63,9 @@ func add(resourceName string) error {
 		}
 	}
 
-	// Insert create http handler fragment into main file
+	// Insert import statement into main file
 	if contains, _ := template.Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\""); contains {
 		log.Printf("insert: %s...already there\n", "import")
-		err := template.InsertFragment("main.go",
-			"\"net/http\"",
-			"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
-		if err != nil {
-			log.Fatalln(err)
-		}
 	} else {
 		log.Printf("insert: %s...ok\n", "import")
 		err := template.InsertFragment("main.go",
@@ -82,14 +76,19 @@ func add(resourceName string) error {
 		}
 	}
 
-	log.Printf("insert: %s...ok\n", "http handler")
-	fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
-		"\trouter.HandleFunc(\"/%ss\", %sAdapter.GetAll()).Methods(\"GET\")\n", resourceName, capitalize(resourceName), resourceName, resourceName)
-	err := template.InsertFragment("main.go",
-		"log.Println(\"starting http service on port 8080...\")",
-		fragment)
-	if err != nil {
-		log.Fatalln(err)
+	check := fmt.Sprintf("%sAdapter := http2.New%sHandler()", resourceName, capitalize(resourceName))
+	if contains, _ := template.Contains("main.go", check); contains {
+		log.Printf("insert: %s...already there\n", "http handler")
+	} else {
+		log.Printf("insert: %s...ok\n", "http handler")
+		fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
+			"\trouter.HandleFunc(\"/%ss\", %sAdapter.GetAll()).Methods(\"GET\")\n", resourceName, capitalize(resourceName), resourceName, resourceName)
+		err := template.InsertFragment("main.go",
+			"log.Println(\"starting http service on port 8080...\")",
+			fragment)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	root := viper.GetString("RESTKIT_ROOT")
@@ -99,7 +98,7 @@ func add(resourceName string) error {
 	path = fmt.Sprintf("%s/bookstore", root)
 	cmd := fmt.Sprintf("go fmt %s", path)
 
-	_, err = exec.Command("bash", "-c", cmd).Output()
+	_, err := exec.Command("bash", "-c", cmd).Output()
 	if err != nil {
 		log.Fatalln(err)
 	}
