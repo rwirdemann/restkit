@@ -7,6 +7,7 @@ https://github.com/rwirdemann/restkit/assets/28768/bd227566-582d-4c83-a8fb-fad46
 ```
 restkit create bookstore // generates the project 
 restkit add book         // adds the book resource
+restkit --help           // prints help message
 ```
 
 ## Example
@@ -27,7 +28,7 @@ go run main.go
 
 ## Configuration
 
-### Enviroment variables
+### Environment variables
 ```
 # Root directory where new projects are generated
 RESTKIT_ROOT   

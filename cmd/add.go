@@ -52,16 +52,21 @@ func add(resourceName string) error {
 	}
 
 	resourceFileName := fmt.Sprintf("%s_handler.go", resourceName)
-	log.Printf("create: %s/%s...ok\n", httpDir, resourceFileName)
-	err := template.Create("resource_handler.go.txt", resourceFileName, httpDir, data)
-	if err != nil {
-		log.Fatalln(err)
+	path := fmt.Sprintf("%s/%s", httpDir, resourceFileName)
+	if fileSystem.Exists(path) {
+		log.Printf("create: %s...exists\n", path)
+	} else {
+		log.Printf("create: %s...ok\n", path)
+		err := template.Create("resource_handler.go.txt", resourceFileName, httpDir, data)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	// Insert create http handler fragment into main file
 	if contains, _ := template.Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\""); contains {
 		log.Printf("insert: %s...already there\n", "import")
-		err = template.InsertFragment("main.go",
+		err := template.InsertFragment("main.go",
 			"\"net/http\"",
 			"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
 		if err != nil {
@@ -69,7 +74,7 @@ func add(resourceName string) error {
 		}
 	} else {
 		log.Printf("insert: %s...ok\n", "import")
-		err = template.InsertFragment("main.go",
+		err := template.InsertFragment("main.go",
 			"\"net/http\"",
 			"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
 		if err != nil {
@@ -80,7 +85,7 @@ func add(resourceName string) error {
 	log.Printf("insert: %s...ok\n", "http handler")
 	fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
 		"\trouter.HandleFunc(\"/%ss\", %sAdapter.GetAll()).Methods(\"GET\")\n", resourceName, capitalize(resourceName), resourceName, resourceName)
-	err = template.InsertFragment("main.go",
+	err := template.InsertFragment("main.go",
 		"log.Println(\"starting http service on port 8080...\")",
 		fragment)
 	if err != nil {
@@ -91,7 +96,7 @@ func add(resourceName string) error {
 	if len(root) == 0 {
 		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
 	}
-	path := fmt.Sprintf("%s/bookstore", root)
+	path = fmt.Sprintf("%s/bookstore", root)
 	cmd := fmt.Sprintf("go fmt %s", path)
 
 	_, err = exec.Command("bash", "-c", cmd).Output()

@@ -13,7 +13,6 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockTemplate := ports.NewMockTemplate(t)
 	template = mockTemplate
 
-	mockEnv.EXPECT().RKRoot().Return("/github.com/rwirdemann/", nil)
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore").Return(false)
 	mockFileSystem.EXPECT().CreateDir("/github.com/rwirdemann/bookstore").Return(nil)
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/.restkit").Return(false)
@@ -31,5 +30,5 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/main.go").Return(false)
 	mockTemplate.EXPECT().Create("main.go.txt", "main.go", path, data).Return(nil)
 
-	create("bookstore")
+	create("bookstore", "/github.com/rwirdemann/bookstore")
 }
