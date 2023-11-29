@@ -1,6 +1,6 @@
 build:
 	packr
-	go build -o ${GOPATH/}bin/restkit main.go
+	go build -o ${GOPATH}/bin/restkit main.go
 	packr clean
 
 clean:
