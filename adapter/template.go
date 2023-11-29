@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"fmt"
+	"github.com/gobuffalo/packr"
 	"github.com/rwirdemann/restkit/arrays"
 	io2 "github.com/rwirdemann/restkit/io"
 	"io"
@@ -68,7 +69,13 @@ func (t Template) Create(templ string, out string, path string, data interface{}
 		return err
 	}
 
-	temp, err := template.ParseGlob(fmt.Sprintf("%s/*", templatePath))
+	box := packr.NewBox(templatePath)
+	s, err := box.FindString(templ)
+	if err != nil {
+		return err
+	}
+
+	tmpl, err := template.New(templ).Parse(s)
 	if err != nil {
 		return err
 	}
@@ -78,5 +85,5 @@ func (t Template) Create(templ string, out string, path string, data interface{}
 	if err != nil {
 		return err
 	}
-	return temp.ExecuteTemplate(gomod, templ, data)
+	return tmpl.ExecuteTemplate(gomod, templ, data)
 }

@@ -10,7 +10,6 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-
 	log.Println("starting http service on port 8080...")
 	err := router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		tpl, _ := route.GetPathTemplate()

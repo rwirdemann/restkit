@@ -26,6 +26,12 @@ go mod tidy
 go run main.go
 ```
 
+## Build
+
+```text
+go get github.com/gobuffalo/packr/packr
+make
+
 ## Configuration
 
 ### Environment variables
