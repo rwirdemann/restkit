@@ -27,6 +27,8 @@ func TestAddResource(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("adapter/http/book_handler.go").Return(false)
 	mockTemplate.EXPECT().Create("resource_handler.go.txt", "book_handler.go", "adapter/http", data).Return(nil)
 
+	mockFileSystem.EXPECT().Pwd().Return("github.com/rwirdemann/bookstore")
+	mockFileSystem.EXPECT().Base("github.com/rwirdemann/bookstore").Return("bookstore")
 	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\"").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"\"net/http\"",

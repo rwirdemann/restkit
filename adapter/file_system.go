@@ -3,6 +3,7 @@ package adapter
 import (
 	"errors"
 	"os"
+	"path/filepath"
 )
 
 type FileSystem struct {
@@ -21,4 +22,15 @@ func (f FileSystem) Exists(path string) bool {
 		return false
 	}
 	return true
+}
+
+func (f FileSystem) Pwd() string {
+	if pwd, err := os.Getwd(); err == nil {
+		return pwd
+	}
+	return ""
+}
+
+func (f FileSystem) Base(path string) string {
+	return filepath.Base(path)
 }

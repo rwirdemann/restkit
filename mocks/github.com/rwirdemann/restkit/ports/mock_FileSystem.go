@@ -21,6 +21,48 @@ func (_m *MockFileSystem) EXPECT() *MockFileSystem_Expecter {
 	return &MockFileSystem_Expecter{mock: &_m.Mock}
 }
 
+// Base provides a mock function with given fields: path
+func (_m *MockFileSystem) Base(path string) string {
+	ret := _m.Called(path)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string) string); ok {
+		r0 = rf(path)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockFileSystem_Base_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Base'
+type MockFileSystem_Base_Call struct {
+	*mock.Call
+}
+
+// Base is a helper method to define mock.On call
+//   - path string
+func (_e *MockFileSystem_Expecter) Base(path interface{}) *MockFileSystem_Base_Call {
+	return &MockFileSystem_Base_Call{Call: _e.mock.On("Base", path)}
+}
+
+func (_c *MockFileSystem_Base_Call) Run(run func(path string)) *MockFileSystem_Base_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *MockFileSystem_Base_Call) Return(_a0 string) *MockFileSystem_Base_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFileSystem_Base_Call) RunAndReturn(run func(string) string) *MockFileSystem_Base_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateDir provides a mock function with given fields: path
 func (_m *MockFileSystem) CreateDir(path string) error {
 	ret := _m.Called(path)
@@ -155,6 +197,47 @@ func (_c *MockFileSystem_Exists_Call) Return(_a0 bool) *MockFileSystem_Exists_Ca
 }
 
 func (_c *MockFileSystem_Exists_Call) RunAndReturn(run func(string) bool) *MockFileSystem_Exists_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Pwd provides a mock function with given fields:
+func (_m *MockFileSystem) Pwd() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockFileSystem_Pwd_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Pwd'
+type MockFileSystem_Pwd_Call struct {
+	*mock.Call
+}
+
+// Pwd is a helper method to define mock.On call
+func (_e *MockFileSystem_Expecter) Pwd() *MockFileSystem_Pwd_Call {
+	return &MockFileSystem_Pwd_Call{Call: _e.mock.On("Pwd")}
+}
+
+func (_c *MockFileSystem_Pwd_Call) Run(run func()) *MockFileSystem_Pwd_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockFileSystem_Pwd_Call) Return(_a0 string) *MockFileSystem_Pwd_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFileSystem_Pwd_Call) RunAndReturn(run func() string) *MockFileSystem_Pwd_Call {
 	_c.Call.Return(run)
 	return _c
 }

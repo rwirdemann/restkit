@@ -64,13 +64,13 @@ func add(resourceName string) error {
 	}
 
 	// Insert import statement into main file
-	if contains, _ := template.Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\""); contains {
+	projectName := fileSystem.Base(fileSystem.Pwd())
+	f := fmt.Sprintf("http2 \"github.com/rwirdemann/%s/adapter/http\"", projectName)
+	if contains, _ := template.Contains("main.go", f); contains {
 		log.Printf("insert: %s...already there\n", "import")
 	} else {
 		log.Printf("insert: %s...ok\n", "import")
-		err := template.InsertFragment("main.go",
-			"\"net/http\"",
-			"http2 \"github.com/rwirdemann/bookstore/adapter/http\"")
+		err := template.InsertFragment("main.go", "\"net/http\"", f)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -95,7 +95,7 @@ func add(resourceName string) error {
 	if len(root) == 0 {
 		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
 	}
-	path = fmt.Sprintf("%s/bookstore", root)
+	path = fmt.Sprintf("%s/%s", root, projectName)
 	cmd := fmt.Sprintf("go fmt %s", path)
 
 	_, err := exec.Command("bash", "-c", cmd).Output()
