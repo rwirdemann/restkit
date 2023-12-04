@@ -11,12 +11,12 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(addCmd)
+	addCmd.AddCommand(resourceCmd)
 }
 
-var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Adds resource",
+var resourceCmd = &cobra.Command{
+	Use:   "resource",
+	Short: "Creates resource",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := add(args[0]); err != nil {
