@@ -16,12 +16,13 @@ func init() {
 
 var resourceCmd = &cobra.Command{
 	Use:   "resource",
-	Short: "Creates resource",
+	Short: "creates a resource",
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := add(args[0]); err != nil {
-			log.Panicf("Fatal error %s", err)
+			return err
 		}
+		return nil
 	},
 }
 
