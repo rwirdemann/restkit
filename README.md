@@ -31,6 +31,7 @@ go run main.go
 ```text
 go get github.com/gobuffalo/packr/packr
 make
+```
 
 ## Configuration
 
