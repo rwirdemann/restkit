@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/exec"
 	"unicode"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -50,16 +51,8 @@ func add(resourceName string) error {
 	}{
 		Resource: capitalize(resourceName),
 	}
-	resourceHandlerFileName := fmt.Sprintf("%s_handler.go", resourceName)
-	path := fmt.Sprintf("%s/%s", httpDir, resourceHandlerFileName)
-	if fileSystem.Exists(path) {
-		log.Printf("create: %s...exists\n", path)
-	} else {
-		log.Printf("create: %s...ok\n", path)
-		err := template.Create("resource_handler.go.txt", resourceHandlerFileName, httpDir, data)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	if err := createFromTemplate(fmt.Sprintf("%s_handler.go", resourceName), httpDir, "resource_handler.go.txt", data); err != nil {
+		return err
 	}
 
 	// Insert adapter import statement into main file
@@ -98,7 +91,7 @@ func add(resourceName string) error {
 
 	// Create domain object for resource representation
 	resourceFileName := fmt.Sprintf("%s.go", resourceName)
-	path = fmt.Sprintf("%s/%s", "domain", resourceFileName)
+	path := fmt.Sprintf("%s/%s", "domain", resourceFileName)
 	if fileSystem.Exists(path) {
 		log.Printf("create: %s...exists\n", path)
 	} else {
@@ -119,6 +112,19 @@ func add(resourceName string) error {
 		return err
 	}
 
+	return nil
+}
+
+func createFromTemplate(filename, path, tmpl string, data interface{}) error {
+	fn := fmt.Sprintf("%s/%s", path, filename)
+	if fileSystem.Exists(fn) {
+		log.Printf("create: %s...exists\n", fn)
+	} else {
+		log.Printf("create: %s...ok\n", path)
+		if err := template.Create(tmpl, filename, path, data); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
