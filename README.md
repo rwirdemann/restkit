@@ -17,7 +17,7 @@ restkit create bookstore
 cd bookstore
 
 # Add first resource
-restkit add book
+restkit add resource book
 
 # Update dependencies
 go mod tidy
