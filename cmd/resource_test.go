@@ -40,5 +40,10 @@ func TestAddResource(t *testing.T) {
 		"bookAdapter := http2.NewBookHandler()\n"+
 			"\trouter.HandleFunc(\"/books\", bookAdapter.GetAll()).Methods(\"GET\")\n").Return(nil)
 
+	mockFileSystem.EXPECT().Exists("domain").Return(false)
+	mockFileSystem.EXPECT().CreateDir("domain").Return(nil)
+	mockFileSystem.EXPECT().Exists("domain/book.go").Return(false)
+	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "domain", data).Return(nil)
+
 	add("book")
 }

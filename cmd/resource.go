@@ -33,12 +33,14 @@ func add(resourceName string) error {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
+	// Create adapter dir if not exist
 	if !fileSystem.Exists("adapter") {
 		if err := fileSystem.CreateDir("adapter"); err != nil {
 			return err
 		}
 	}
 
+	// Create http dir if not exist
 	httpDir := fmt.Sprintf("%s%c%s", "adapter", os.PathSeparator, "http")
 	if !fileSystem.Exists(httpDir) {
 		if err := fileSystem.CreateDir(httpDir); err != nil {
@@ -46,25 +48,25 @@ func add(resourceName string) error {
 		}
 	}
 
+	// Create resource handler file
 	data := struct {
 		Resource string
 	}{
 		Resource: capitalize(resourceName),
 	}
-
-	resourceFileName := fmt.Sprintf("%s_handler.go", resourceName)
-	path := fmt.Sprintf("%s/%s", httpDir, resourceFileName)
+	resourceHandlerFileName := fmt.Sprintf("%s_handler.go", resourceName)
+	path := fmt.Sprintf("%s/%s", httpDir, resourceHandlerFileName)
 	if fileSystem.Exists(path) {
 		log.Printf("create: %s...exists\n", path)
 	} else {
 		log.Printf("create: %s...ok\n", path)
-		err := template.Create("resource_handler.go.txt", resourceFileName, httpDir, data)
+		err := template.Create("resource_handler.go.txt", resourceHandlerFileName, httpDir, data)
 		if err != nil {
 			log.Fatalln(err)
 		}
 	}
 
-	// Insert import statement into main file
+	// Insert adapter import statement into main file
 	projectName := fileSystem.Base(fileSystem.Pwd())
 	f := fmt.Sprintf("http2 \"github.com/rwirdemann/%s/adapter/http\"", projectName)
 	if contains, _ := template.Contains("main.go", f); contains {
@@ -77,6 +79,7 @@ func add(resourceName string) error {
 		}
 	}
 
+	// Insert create adapter into main file
 	check := fmt.Sprintf("%sAdapter := http2.New%sHandler()", resourceName, capitalize(resourceName))
 	if contains, _ := template.Contains("main.go", check); contains {
 		log.Printf("insert: %s...already there\n", "http handler")
@@ -92,17 +95,36 @@ func add(resourceName string) error {
 		}
 	}
 
+	// Create domain dir if not exist
+	if !fileSystem.Exists("domain") {
+		if err := fileSystem.CreateDir("domain"); err != nil {
+			return err
+		}
+	}
+
+	// Create domain object for resource representation
+	resourceFileName := fmt.Sprintf("%s.go", resourceName)
+	path = fmt.Sprintf("%s/%s", "domain", resourceFileName)
+	if fileSystem.Exists(path) {
+		log.Printf("create: %s...exists\n", path)
+	} else {
+		log.Printf("create: %s...ok\n", path)
+		if err := template.Create("resource.go.txt", resourceFileName, "domain", data); err != nil {
+			return err
+		}
+	}
+
+	// Run go fmt
 	root := viper.GetString("RESTKIT_ROOT")
 	if len(root) == 0 {
 		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
 	}
 	path = fmt.Sprintf("%s/%s", root, projectName)
 	cmd := fmt.Sprintf("go fmt %s", path)
-
-	_, err := exec.Command("bash", "-c", cmd).Output()
-	if err != nil {
-		log.Fatalln(err)
+	if _, err := exec.Command("bash", "-c", cmd).Output(); err != nil {
+		return err
 	}
+
 	return nil
 }
 
