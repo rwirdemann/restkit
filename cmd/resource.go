@@ -33,19 +33,15 @@ func add(resourceName string) error {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
-	// Create adapter dir if not exist
-	if !fileSystem.Exists("adapter") {
-		if err := fileSystem.CreateDir("adapter"); err != nil {
-			return err
-		}
+	// Create adapter dir if not exists
+	if err := createDirIfNotExists("adapter"); err != nil {
+		return err
 	}
 
 	// Create http dir if not exist
 	httpDir := fmt.Sprintf("%s%c%s", "adapter", os.PathSeparator, "http")
-	if !fileSystem.Exists(httpDir) {
-		if err := fileSystem.CreateDir(httpDir); err != nil {
-			return err
-		}
+	if err := createDirIfNotExists(httpDir); err != nil {
+		return err
 	}
 
 	// Create resource handler file
@@ -96,10 +92,8 @@ func add(resourceName string) error {
 	}
 
 	// Create domain dir if not exist
-	if !fileSystem.Exists("domain") {
-		if err := fileSystem.CreateDir("domain"); err != nil {
-			return err
-		}
+	if err := createDirIfNotExists("domain"); err != nil {
+		return err
 	}
 
 	// Create domain object for resource representation
@@ -125,6 +119,15 @@ func add(resourceName string) error {
 		return err
 	}
 
+	return nil
+}
+
+func createDirIfNotExists(dir string) error {
+	if !fileSystem.Exists(dir) {
+		if err := fileSystem.CreateDir(dir); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
