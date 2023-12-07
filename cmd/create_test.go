@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/rwirdemann/restkit/mocks/github.com/rwirdemann/restkit/ports"
 	"testing"
+
+	"github.com/rwirdemann/restkit/mocks/github.com/rwirdemann/restkit/ports"
 )
 
 func TestCreateProjectDirectory(t *testing.T) {
