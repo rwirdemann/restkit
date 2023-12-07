@@ -14,25 +14,25 @@ func TestAddResource(t *testing.T) {
 	template = mockTemplate
 
 	mockFileSystem.EXPECT().Exists(".restkit").Return(true)
-	mockFileSystem.EXPECT().Exists("adapter").Return(false)
-	mockFileSystem.EXPECT().CreateDir("adapter").Return(nil)
-	mockFileSystem.EXPECT().Exists("adapter/http").Return(false)
-	mockFileSystem.EXPECT().CreateDir("adapter/http").Return(nil)
+	mockFileSystem.EXPECT().Exists("context").Return(false)
+	mockFileSystem.EXPECT().CreateDir("context").Return(nil)
+	mockFileSystem.EXPECT().Exists("context/http").Return(false)
+	mockFileSystem.EXPECT().CreateDir("context/http").Return(nil)
 	data := struct {
 		Resource string
 	}{
 		Resource: "Book",
 	}
 
-	mockFileSystem.EXPECT().Exists("adapter/http/book_handler.go").Return(false)
-	mockTemplate.EXPECT().Create("resource_handler.go.txt", "book_handler.go", "adapter/http", data).Return(nil)
+	mockFileSystem.EXPECT().Exists("context/http/book_handler.go").Return(false)
+	mockTemplate.EXPECT().Create("resource_handler.go.txt", "book_handler.go", "context/http", data).Return(nil)
 
 	mockFileSystem.EXPECT().Pwd().Return("github.com/rwirdemann/bookstore")
 	mockFileSystem.EXPECT().Base("github.com/rwirdemann/bookstore").Return("bookstore")
-	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/adapter/http\"").Return(false, nil)
+	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"\"net/http\"",
-		"http2 \"github.com/rwirdemann/bookstore/adapter/http\"").Return(nil)
+		"http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(nil)
 
 	mockTemplate.EXPECT().Contains("main.go", "bookAdapter := http2.NewBookHandler()").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",

@@ -34,13 +34,13 @@ func add(resourceName string) error {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
-	// Create adapter dir if not exists
-	if err := createDirIfNotExists("adapter"); err != nil {
+	// Create context dir if not exists
+	if err := createDirIfNotExists("context"); err != nil {
 		return err
 	}
 
 	// Create http dir if not exist
-	httpDir := fmt.Sprintf("%s%c%s", "adapter", os.PathSeparator, "http")
+	httpDir := fmt.Sprintf("%s%c%s", "context", os.PathSeparator, "http")
 	if err := createDirIfNotExists(httpDir); err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func add(resourceName string) error {
 
 	// Insert adapter import statement into main file
 	projectName := fileSystem.Base(fileSystem.Pwd())
-	f := fmt.Sprintf("http2 \"github.com/rwirdemann/%s/adapter/http\"", projectName)
+	f := fmt.Sprintf("http2 \"github.com/rwirdemann/%s/context/http\"", projectName)
 	if contains, _ := template.Contains("main.go", f); contains {
 		log.Printf("insert: %s...already there\n", "import")
 	} else {
