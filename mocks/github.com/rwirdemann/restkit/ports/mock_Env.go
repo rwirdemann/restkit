@@ -17,6 +17,57 @@ func (_m *MockEnv) EXPECT() *MockEnv_Expecter {
 	return &MockEnv_Expecter{mock: &_m.Mock}
 }
 
+// RKPort provides a mock function with given fields:
+func (_m *MockEnv) RKPort() (int, error) {
+	ret := _m.Called()
+
+	var r0 int
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (int, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockEnv_RKPort_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RKPort'
+type MockEnv_RKPort_Call struct {
+	*mock.Call
+}
+
+// RKPort is a helper method to define mock.On call
+func (_e *MockEnv_Expecter) RKPort() *MockEnv_RKPort_Call {
+	return &MockEnv_RKPort_Call{Call: _e.mock.On("RKPort")}
+}
+
+func (_c *MockEnv_RKPort_Call) Run(run func()) *MockEnv_RKPort_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockEnv_RKPort_Call) Return(_a0 int, _a1 error) *MockEnv_RKPort_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockEnv_RKPort_Call) RunAndReturn(run func() (int, error)) *MockEnv_RKPort_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // RKRoot provides a mock function with given fields:
 func (_m *MockEnv) RKRoot() (string, error) {
 	ret := _m.Called()

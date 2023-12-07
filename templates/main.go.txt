@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", "8080"), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", {{.Port}}), router)
 	if err != nil {
 		log.Fatal(err)
 	}

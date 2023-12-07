@@ -20,20 +20,19 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		projectName := args[0]
 		restkitRoot, err := env.RKRoot()
+		restkitPort, err := env.RKPort()
 		if err != nil {
 			return err
 		}
 		projectRoot := restkitRoot + projectName
 
-		if force {
-			if fileSystem.Exists(projectRoot) {
-				if err := remove(projectRoot); err != nil {
-					return err
-				}
+		if force && fileSystem.Exists(projectRoot) {
+			if err := remove(projectRoot); err != nil {
+				return err
 			}
 		}
 
-		if err := create(projectName, projectRoot); err != nil {
+		if err := create(projectName, projectRoot, restkitPort); err != nil {
 			return err
 		}
 
@@ -52,7 +51,7 @@ func remove(projectRoot string) error {
 	return nil
 }
 
-func create(projectName string, projectRoot string) error {
+func create(projectName string, projectRoot string, port int) error {
 	if err := createDirIfNotExist(projectRoot); err != nil {
 		return err
 	}
@@ -64,8 +63,10 @@ func create(projectName string, projectRoot string) error {
 
 	data := struct {
 		Project string
+		Port    int
 	}{
 		Project: projectName,
+		Port:    port,
 	}
 
 	if err := createTemplateIfNotExists(projectRoot, data, "go.mod.txt", "go.mod"); err != nil {
