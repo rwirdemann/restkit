@@ -62,9 +62,8 @@ func add(resourceName string) error {
 		log.Printf("insert: %s...already there\n", "import")
 	} else {
 		log.Printf("insert: %s...ok\n", "import")
-		err := template.InsertFragment("main.go", "\"net/http\"", f)
-		if err != nil {
-			log.Fatalln(err)
+		if err := template.InsertFragment("main.go", "\"net/http\"", f); err != nil {
+			return err
 		}
 	}
 
@@ -76,11 +75,8 @@ func add(resourceName string) error {
 		log.Printf("insert: %s...ok\n", "http handler")
 		fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
 			"\trouter.HandleFunc(\"/%ss\", %sAdapter.GetAll()).Methods(\"GET\")\n", resourceName, capitalize(resourceName), resourceName, resourceName)
-		err := template.InsertFragment("main.go",
-			"log.Println(\"starting http service on port 8080...\")",
-			fragment)
-		if err != nil {
-			log.Fatalln(err)
+		if err := template.InsertFragment("main.go", "log.Println(\"starting http service on port 8080...\")", fragment); err != nil {
+			return err
 		}
 	}
 
@@ -90,15 +86,8 @@ func add(resourceName string) error {
 	}
 
 	// Create domain object for resource representation
-	resourceFileName := fmt.Sprintf("%s.go", resourceName)
-	path := fmt.Sprintf("%s/%s", "domain", resourceFileName)
-	if fileSystem.Exists(path) {
-		log.Printf("create: %s...exists\n", path)
-	} else {
-		log.Printf("create: %s...ok\n", path)
-		if err := template.Create("resource.go.txt", resourceFileName, "domain", data); err != nil {
-			return err
-		}
+	if err := createFromTemplate(fmt.Sprintf("%s.go", resourceName), "domain", "resource.go.txt", data); err != nil {
+		return err
 	}
 
 	// Run go fmt
@@ -106,8 +95,7 @@ func add(resourceName string) error {
 	if len(root) == 0 {
 		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
 	}
-	path = fmt.Sprintf("%s/%s", root, projectName)
-	cmd := fmt.Sprintf("go fmt %s", path)
+	cmd := fmt.Sprintf("go fmt %s", fmt.Sprintf("%s/%s", root, projectName))
 	if _, err := exec.Command("bash", "-c", cmd).Output(); err != nil {
 		return err
 	}
