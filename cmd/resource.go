@@ -80,13 +80,19 @@ func add(resourceName string) error {
 		}
 	}
 
+	// Create application dir if not exist
+	if err := createDirIfNotExists("application"); err != nil {
+		return err
+	}
+
 	// Create domain dir if not exist
-	if err := createDirIfNotExists("domain"); err != nil {
+	appDir := fmt.Sprintf("%s%c%s", "application", os.PathSeparator, "domain")
+	if err := createDirIfNotExists(appDir); err != nil {
 		return err
 	}
 
 	// Create domain object for resource representation
-	if err := createFromTemplate(fmt.Sprintf("%s.go", resourceName), "domain", "resource.go.txt", data); err != nil {
+	if err := createFromTemplate(fmt.Sprintf("%s.go", resourceName), appDir, "resource.go.txt", data); err != nil {
 		return err
 	}
 
