@@ -45,5 +45,5 @@ func TestAddResource(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("domain/book.go").Return(false)
 	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "domain", data).Return(nil)
 
-	add("book")
+	_ = add("book")
 }
