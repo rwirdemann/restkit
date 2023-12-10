@@ -45,7 +45,8 @@ RESTKIT_TEMPLATES
 ```
 
 ## Understand the structure of the generated API
-The structure of the generated REST API follows the idea of hexagonal architectures according to the following directory layout:
+The structure of the generated REST API follows the idea of hexagonal architectures according to the
+following directory layout:
 
 ```text
 application
@@ -53,11 +54,11 @@ application
     book.go
   services
     books.go
-  ports
-    in
-      book_service.go
-    out
-      book_repository.go
+ports
+  in
+    books_service.go
+  out
+    books_repository.go
 context
   http
     books_handler.go
@@ -73,6 +74,7 @@ the application itself to access external components like databases.
 The `context` package contains adapter classes that adapt the external world (e.g. HTTP, SQL) to the
 language of the internal world. The subpackage name indicates the type of the external world and its
 direction. Thus, the http.books_handler implements a set of HTTP endpoints like `GET /books` and
-maps these incoming requests to internal services. Incoming adapter classes use ports of the
-ports.in package to delegate incoming requests.
+maps incoming HTTP requests to internal services. Incoming adapter classes use the interfaces
+provided by the `ports.in`` package to delegate incoming requests to the suitable application
+service.
 

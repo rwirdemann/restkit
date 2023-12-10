@@ -51,7 +51,7 @@ func add(resourceName string) error {
 	}{
 		Resource: capitalize(resourceName),
 	}
-	if err := createFromTemplate(fmt.Sprintf("%s_handler.go", resourceName), httpDir, "resource_handler.go.txt", data); err != nil {
+	if err := createFromTemplate(fmt.Sprintf("%s_handler.go", pluralize(resourceName)), httpDir, "resource_handler.go.txt", data); err != nil {
 		return err
 	}
 
@@ -68,13 +68,15 @@ func add(resourceName string) error {
 	}
 
 	// Insert create adapter into main file
-	check := fmt.Sprintf("%sAdapter := http2.New%sHandler()", resourceName, capitalize(resourceName))
+	check := fmt.Sprintf("%sAdapter := http2.New%sHandler()", pluralize(resourceName), pluralize(capitalize(resourceName)))
 	if contains, _ := template.Contains("main.go", check); contains {
 		log.Printf("insert: %s...already there\n", "http handler")
 	} else {
 		log.Printf("insert: %s...ok\n", "http handler")
 		fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
-			"\trouter.HandleFunc(\"/%ss\", %sAdapter.GetAll()).Methods(\"GET\")\n", resourceName, capitalize(resourceName), resourceName, resourceName)
+			"\trouter.HandleFunc(\"/%s\", %sAdapter.GetAll()).Methods(\"GET\")\n",
+			pluralize(resourceName), pluralize(capitalize(resourceName)),
+			pluralize(resourceName), pluralize(resourceName))
 		if err := template.InsertFragment("main.go", "log.Println(\"starting http service on port 8080...\")", fragment); err != nil {
 			return err
 		}
@@ -135,4 +137,8 @@ func capitalize(str string) string {
 	runes := []rune(str)
 	runes[0] = unicode.ToUpper(runes[0])
 	return string(runes)
+}
+
+func pluralize(str string) string {
+	return str + "s"
 }

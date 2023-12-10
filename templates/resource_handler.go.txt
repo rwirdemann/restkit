@@ -8,7 +8,7 @@ import (
 type {{.Resource}}Handler struct {
 }
 
-func New{{.Resource}}Handler() *{{.Resource}}Handler {
+func New{{.Resource}}sHandler() *{{.Resource}}Handler {
 	return &{{.Resource}}Handler{}
 }
 

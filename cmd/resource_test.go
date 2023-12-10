@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/rwirdemann/restkit/mocks/github.com/rwirdemann/restkit/ports"
 	"testing"
+
+	"github.com/rwirdemann/restkit/mocks/github.com/rwirdemann/restkit/ports"
 )
 
 func TestAddResource(t *testing.T) {
@@ -24,8 +25,8 @@ func TestAddResource(t *testing.T) {
 		Resource: "Book",
 	}
 
-	mockFileSystem.EXPECT().Exists("context/http/book_handler.go").Return(false)
-	mockTemplate.EXPECT().Create("resource_handler.go.txt", "book_handler.go", "context/http", data).Return(nil)
+	mockFileSystem.EXPECT().Exists("context/http/books_handler.go").Return(false)
+	mockTemplate.EXPECT().Create("resource_handler.go.txt", "books_handler.go", "context/http", data).Return(nil)
 
 	mockFileSystem.EXPECT().Pwd().Return("github.com/rwirdemann/bookstore")
 	mockFileSystem.EXPECT().Base("github.com/rwirdemann/bookstore").Return("bookstore")
@@ -34,11 +35,11 @@ func TestAddResource(t *testing.T) {
 		"\"net/http\"",
 		"http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(nil)
 
-	mockTemplate.EXPECT().Contains("main.go", "bookAdapter := http2.NewBookHandler()").Return(false, nil)
+	mockTemplate.EXPECT().Contains("main.go", "booksAdapter := http2.NewBooksHandler()").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"log.Println(\"starting http service on port 8080...\")",
-		"bookAdapter := http2.NewBookHandler()\n"+
-			"\trouter.HandleFunc(\"/books\", bookAdapter.GetAll()).Methods(\"GET\")\n").Return(nil)
+		"booksAdapter := http2.NewBooksHandler()\n"+
+			"\trouter.HandleFunc(\"/books\", booksAdapter.GetAll()).Methods(\"GET\")\n").Return(nil)
 
 	mockFileSystem.EXPECT().Exists("application").Return(false)
 	mockFileSystem.EXPECT().CreateDir("application").Return(nil)
