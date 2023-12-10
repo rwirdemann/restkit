@@ -40,6 +40,10 @@ func add(resourceName string) error {
 		return err
 	}
 
+	if err := createPorts(resourceName); err != nil {
+		return err
+	}
+
 	if err := gotools.Fmt(); err != nil {
 		return err
 	}
@@ -118,6 +122,21 @@ func createDomainObject(resourceName string) error {
 		Resource: capitalize(resourceName),
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s.go", resourceName), appDir, "resource.go.txt", data); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createPorts(resourceName string) error {
+	// Create ports dir if not exists
+	if err := createDirIfNotExists("ports"); err != nil {
+		return err
+	}
+
+	// Create in dir if not exist
+	inDir := fmt.Sprintf("%s%c%s", "ports", os.PathSeparator, "in")
+	if err := createDirIfNotExists(inDir); err != nil {
 		return err
 	}
 
