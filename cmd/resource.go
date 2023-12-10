@@ -140,6 +140,15 @@ func createPorts(resourceName string) error {
 		return err
 	}
 
+	data := struct {
+		Resource string
+	}{
+		Resource: capitalize(resourceName),
+	}
+	if err := createFromTemplate(fmt.Sprintf("%s_service.go", pluralize(resourceName)), inDir, "in_port.go.txt", data); err != nil {
+		return err
+	}
+
 	return nil
 }
 
