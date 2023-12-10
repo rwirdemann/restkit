@@ -10,6 +10,7 @@
             "request": "launch",
             "mode": "test",
             "program": "${workspaceFolder}/cmd/resource_test.go",
+            "showLog": false,
         },
         {
             "name": "create bookstore",

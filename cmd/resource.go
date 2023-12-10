@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"unicode"
 
+	"github.com/rwirdemann/restkit/gotools"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 func init() {
@@ -28,12 +27,27 @@ var resourceCmd = &cobra.Command{
 }
 
 func add(resourceName string) error {
-
 	// Check if current directory is a RESTkit's project root
 	if !fileSystem.Exists(".restkit") {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
+	if err := createHttpHandler(resourceName); err != nil {
+		return err
+	}
+
+	if err := createDomainObject(resourceName); err != nil {
+		return err
+	}
+
+	if err := gotools.Fmt(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createHttpHandler(resourceName string) error {
 	// Create context dir if not exists
 	if err := createDirIfNotExists("context"); err != nil {
 		return err
@@ -82,6 +96,10 @@ func add(resourceName string) error {
 		}
 	}
 
+	return nil
+}
+
+func createDomainObject(resourceName string) error {
 	// Create application dir if not exist
 	if err := createDirIfNotExists("application"); err != nil {
 		return err
@@ -94,17 +112,12 @@ func add(resourceName string) error {
 	}
 
 	// Create domain object for resource representation
+	data := struct {
+		Resource string
+	}{
+		Resource: capitalize(resourceName),
+	}
 	if err := createFromTemplate(fmt.Sprintf("%s.go", resourceName), appDir, "resource.go.txt", data); err != nil {
-		return err
-	}
-
-	// Run go fmt
-	root := viper.GetString("RESTKIT_ROOT")
-	if len(root) == 0 {
-		return fmt.Errorf("env %s not set", "RESTKIT_ROOT")
-	}
-	cmd := fmt.Sprintf("go fmt %s", fmt.Sprintf("%s/%s", root, projectName))
-	if _, err := exec.Command("bash", "-c", cmd).Output(); err != nil {
 		return err
 	}
 
