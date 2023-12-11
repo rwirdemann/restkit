@@ -1,4 +1,7 @@
 package in
 
-type {{.Resource}}Service interface {
+import "github.com/rwirdemann/bookstore/application/domain"
+
+type {{.Resource}}sService interface {
+    GetAll() ([]domain.{{.Resource}}, error)
 }
