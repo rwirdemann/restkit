@@ -140,10 +140,13 @@ func createPorts(resourceName string) error {
 		return err
 	}
 
+	projectName := fileSystem.Base(fileSystem.Pwd())
 	data := struct {
 		Resource string
+		Project  string
 	}{
 		Resource: capitalize(resourceName),
+		Project:  projectName,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s_service.go", pluralize(resourceName)), inDir, "in_port.go.txt", data); err != nil {
 		return err

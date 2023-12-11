@@ -1,6 +1,6 @@
 package in
 
-import "github.com/rwirdemann/bookstore/application/domain"
+import "github.com/rwirdemann/{{.Project}}/application/domain"
 
 type {{.Resource}}sService interface {
     GetAll() ([]domain.{{.Resource}}, error)

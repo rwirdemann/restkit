@@ -48,12 +48,19 @@ func TestAddResource(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("application/domain/book.go").Return(false)
 	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "application/domain", data).Return(nil)
 
+	domainObjectData := struct {
+		Resource string
+		Project  string
+	}{
+		Resource: "Book",
+		Project:  "bookstore",
+	}
 	mockFileSystem.EXPECT().Exists("ports").Return(false)
 	mockFileSystem.EXPECT().CreateDir("ports").Return(nil)
 	mockFileSystem.EXPECT().Exists("ports/in").Return(false)
 	mockFileSystem.EXPECT().CreateDir("ports/in").Return(nil)
 	mockFileSystem.EXPECT().Exists("ports/in/books_service.go").Return(false)
-	mockTemplate.EXPECT().Create("in_port.go.txt", "books_service.go", "ports/in", data).Return(nil)
+	mockTemplate.EXPECT().Create("in_port.go.txt", "books_service.go", "ports/in", domainObjectData).Return(nil)
 
 	_ = add("book")
 }

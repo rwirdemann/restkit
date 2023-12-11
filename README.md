@@ -44,7 +44,7 @@ RESTKIT_ROOT
 RESTKIT_TEMPLATES
 ```
 
-## Understand the structure of the generated API
+## Understanding the structure of the generated API
 The structure of the generated REST API follows the idea of hexagonal architectures according to the
 following directory layout:
 
