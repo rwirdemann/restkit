@@ -23,9 +23,11 @@ func TestCreateProjectDirectory(t *testing.T) {
 	data := struct {
 		Project string
 		Port    int
+		Module  string
 	}{
 		Project: "bookstore",
 		Port:    8080,
+		Module:  "github.com/rwirdemann",
 	}
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/go.mod").Return(false)
 	mockTemplate.EXPECT().Create("go.mod.txt", "go.mod", path, data).Return(nil)
@@ -33,5 +35,5 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/main.go").Return(false)
 	mockTemplate.EXPECT().Create("main.go.txt", "main.go", path, data).Return(nil)
 
-	create("bookstore", "/github.com/rwirdemann/bookstore", 8080)
+	create("bookstore", "/github.com/rwirdemann/bookstore", 8080, "github.com/rwirdemann")
 }
