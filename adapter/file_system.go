@@ -34,3 +34,7 @@ func (f FileSystem) Pwd() string {
 func (f FileSystem) Base(path string) string {
 	return filepath.Base(path)
 }
+
+func (f FileSystem) Remove(path string) error {
+	return os.Remove(path)
+}

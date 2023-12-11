@@ -32,6 +32,7 @@ func add(resourceName string) error {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
+	log.Printf("FORCE: %t", force)
 	if err := createHttpHandler(resourceName); err != nil {
 		return err
 	}
@@ -157,13 +158,24 @@ func createPorts(resourceName string) error {
 
 func createFromTemplate(filename, path, tmpl string, data interface{}) error {
 	fn := fmt.Sprintf("%s/%s", path, filename)
-	if fileSystem.Exists(fn) {
-		log.Printf("create: %s...exists\n", fn)
-	} else {
-		log.Printf("create: %s...ok\n", path)
+	if !fileSystem.Exists(fn) {
 		if err := template.Create(tmpl, filename, path, data); err != nil {
 			return err
 		}
+		log.Printf("create: %s...ok\n", fn)
+		return nil
+	}
+
+	log.Printf("create: %s...exists\n", fn)
+	if force {
+		if err := fileSystem.Remove(fn); err != nil {
+			return err
+		}
+		log.Printf("remove: %s...ok\n", fn)
+		if err := template.Create(tmpl, filename, path, data); err != nil {
+			return err
+		}
+		log.Printf("create: %s...ok\n", fn)
 	}
 	return nil
 }

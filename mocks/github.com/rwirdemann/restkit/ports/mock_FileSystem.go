@@ -242,6 +242,48 @@ func (_c *MockFileSystem_Pwd_Call) RunAndReturn(run func() string) *MockFileSyst
 	return _c
 }
 
+// Remove provides a mock function with given fields: path
+func (_m *MockFileSystem) Remove(path string) error {
+	ret := _m.Called(path)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(path)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockFileSystem_Remove_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Remove'
+type MockFileSystem_Remove_Call struct {
+	*mock.Call
+}
+
+// Remove is a helper method to define mock.On call
+//   - path string
+func (_e *MockFileSystem_Expecter) Remove(path interface{}) *MockFileSystem_Remove_Call {
+	return &MockFileSystem_Remove_Call{Call: _e.mock.On("Remove", path)}
+}
+
+func (_c *MockFileSystem_Remove_Call) Run(run func(path string)) *MockFileSystem_Remove_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *MockFileSystem_Remove_Call) Return(_a0 error) *MockFileSystem_Remove_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockFileSystem_Remove_Call) RunAndReturn(run func(string) error) *MockFileSystem_Remove_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockFileSystem creates a new instance of MockFileSystem. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockFileSystem(t interface {
