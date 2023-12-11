@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "test",
             "program": "${workspaceFolder}/cmd/resource_test.go",
-            "showLog": false,
+            "internalConsoleOptions": "openOnSessionStart",
         },
         {
             "name": "create bookstore",
@@ -18,7 +18,8 @@
             "request": "launch",
             "mode": "auto",
             "args": ["create", "bookstore", "-f"],
-            "program": "main.go"
+            "program": "main.go",
+            "internalConsoleOptions": "openOnSessionStart",
         },
         {
             "name": "add resource book",
@@ -27,7 +28,8 @@
             "mode": "auto",
             "args": ["add", "resource", "book", "-f"],
             "cwd": "/Users/ralf/Documents/work/go/src/github.com/rwirdemann/bookstore",
-            "program": "main.go"
+            "program": "main.go",
+            "internalConsoleOptions": "openOnSessionStart",
         }
     ]
 }
