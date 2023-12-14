@@ -14,12 +14,12 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockTemplate := ports.NewMockTemplate(t)
 	template = mockTemplate
 
-	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore").Return(false)
-	mockFileSystem.EXPECT().CreateDir("/github.com/rwirdemann/bookstore").Return(nil)
-	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/.restkit").Return(false)
-	mockFileSystem.EXPECT().CreateFile("/github.com/rwirdemann/bookstore/.restkit").Return(nil, nil)
+	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore").Return(false)
+	mockFileSystem.EXPECT().CreateDir("/go/src/github.com/rwirdemann/bookstore").Return(nil)
+	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore/.restkit").Return(false)
+	mockFileSystem.EXPECT().CreateFile("/go/src/github.com/rwirdemann/bookstore/.restkit").Return(nil, nil)
 
-	path := "/github.com/rwirdemann/bookstore"
+	path := "/go/src/github.com/rwirdemann/bookstore"
 	data := struct {
 		Project string
 		Port    int
@@ -27,13 +27,13 @@ func TestCreateProjectDirectory(t *testing.T) {
 	}{
 		Project: "bookstore",
 		Port:    8080,
-		Module:  "github.com/rwirdemann",
+		Module:  "github.com/rwirdemann/bookstore",
 	}
-	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/go.mod").Return(false)
+	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore/go.mod").Return(false)
 	mockTemplate.EXPECT().Create("go.mod.txt", "go.mod", path, data).Return(nil)
 
-	mockFileSystem.EXPECT().Exists("/github.com/rwirdemann/bookstore/main.go").Return(false)
+	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore/main.go").Return(false)
 	mockTemplate.EXPECT().Create("main.go.txt", "main.go", path, data).Return(nil)
 
-	create("bookstore", "/github.com/rwirdemann/bookstore", 8080, "github.com/rwirdemann")
+	create("github.com/rwirdemann/bookstore", "/go/src/github.com/rwirdemann/bookstore", 8080)
 }

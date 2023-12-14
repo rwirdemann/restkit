@@ -32,7 +32,6 @@ func add(resourceName string) error {
 		return fmt.Errorf("current directory contains no .restkit")
 	}
 
-	log.Printf("FORCE: %t", force)
 	if err := createHttpHandler(resourceName); err != nil {
 		return err
 	}

@@ -30,3 +30,7 @@ func (e Env) RKModule() (string, error) {
 	}
 	return strings.TrimSuffix(strings.Split(root, "src/")[1], "/"), nil
 }
+
+func (e Env) GoPath() (string, error) {
+	return io.GoPath()
+}

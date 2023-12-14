@@ -13,8 +13,8 @@ restkit --help            // prints help message
 ## Example
 ```bash
 # Create project 
-restkit create bookstore
-cd bookstore
+restkit create github.com/rwirdemann/bookstore
+cd $GOPATH/src/github.com/rwirdemann/bookstore
 
 # Add first resource
 restkit add resource book

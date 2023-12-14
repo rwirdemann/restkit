@@ -19,22 +19,27 @@ var createCmd = &cobra.Command{
 	Short: "Creates the project",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		projectName := args[0]
-		restkitRoot, err := env.RKRoot()
+		module := args[0]
+		if err := validateModule(module); err != nil {
+			return err
+		}
 		restkitPort, err := env.RKPort()
-		restKitModule, err := env.RKModule()
 		if err != nil {
 			return err
 		}
-		projectRoot := restkitRoot + projectName
 
+		goPath, err := env.GoPath()
+		if err != nil {
+			return err
+		}
+		projectRoot := fmt.Sprintf("%s%c%s%c%s", goPath, os.PathSeparator, "src", os.PathSeparator, module)
 		if force && fileSystem.Exists(projectRoot) {
 			if err := remove(projectRoot); err != nil {
 				return err
 			}
 		}
 
-		if err := create(projectName, projectRoot, restkitPort, restKitModule); err != nil {
+		if err := create(module, projectRoot, restkitPort); err != nil {
 			return err
 		}
 
@@ -53,7 +58,7 @@ func remove(projectRoot string) error {
 	return nil
 }
 
-func create(projectName string, projectRoot string, port int, module string) error {
+func create(module string, projectRoot string, port int) error {
 	if err := createDirIfNotExist(projectRoot); err != nil {
 		return err
 	}
@@ -63,6 +68,10 @@ func create(projectName string, projectRoot string, port int, module string) err
 		return err
 	}
 
+	projectName, err := projectName(module)
+	if err != nil {
+		return err
+	}
 	data := struct {
 		Project string
 		Port    int

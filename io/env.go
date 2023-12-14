@@ -52,4 +52,13 @@ func RKPort() (int, error) {
 	} else {
 		return i, nil
 	}
+
+}
+
+func GoPath() (string, error) {
+	p := viper.GetString("GOPATH")
+	if len(p) == 0 {
+		return "", fmt.Errorf("env %s not set", "GOPATH")
+	}
+	return p, nil
 }
