@@ -15,7 +15,7 @@ func init() {
 
 var force = false
 var createCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create module",
 	Short: "Creates the project",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
