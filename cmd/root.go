@@ -8,7 +8,7 @@ import (
 
 var version = "0.0.2"
 var rootCmd = &cobra.Command{
-	Use:     "restkit",
+	Use:     "rk",
 	Version: version,
 	Short:   "restkit - a simple CLI to generate rest apis",
 	Long: `restkit is a super fancy CLI 

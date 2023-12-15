@@ -15,7 +15,7 @@ func init() {
 }
 
 var resourceCmd = &cobra.Command{
-	Use:   "resource",
+	Use:   "resource name",
 	Short: "creates a resource",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

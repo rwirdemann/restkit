@@ -5,19 +5,20 @@ https://github.com/rwirdemann/restkit/assets/28768/bd227566-582d-4c83-a8fb-fad46
 
 ## Usage
 ```
-restkit create bookstore  // generates the project 
-restkit add resource book // adds the book resource
-restkit --help            // prints help message
+rk create module     // creates the project 
+rk add resource book // adds the book resource
+rk --help            // prints help message
+rk add --help        // prints help a specific command
 ```
 
 ## Example
 ```bash
 # Create project 
-restkit create github.com/rwirdemann/bookstore
+restkit rk github.com/rwirdemann/bookstore
 cd $GOPATH/src/github.com/rwirdemann/bookstore
 
 # Add first resource
-restkit add resource book
+rk add resource book
 
 # Update dependencies
 go mod tidy
