@@ -1,4 +1,5 @@
 # TODO
+- show next steps after a project was created
 - remove usage of RESTKIT_ROOT
 - remove rwirdemann from templates
 - return list of domain objects from service classes

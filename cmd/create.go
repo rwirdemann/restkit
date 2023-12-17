@@ -43,6 +43,10 @@ var createCmd = &cobra.Command{
 			return err
 		}
 
+		log.Printf("your project '%s' has been created successfully. next steps:", module)
+		log.Printf("cd %s\n", projectRoot)
+		log.Println("go mod tidy")
+		log.Println("go run main.go")
 		return nil
 	},
 }
