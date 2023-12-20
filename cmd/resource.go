@@ -40,6 +40,10 @@ func add(resourceName string) error {
 		return err
 	}
 
+	if err := createService(resourceName); err != nil {
+		return err
+	}
+
 	if err := createPorts(resourceName); err != nil {
 		return err
 	}
@@ -122,6 +126,31 @@ func createDomainObject(resourceName string) error {
 		Resource: capitalize(resourceName),
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s.go", resourceName), appDir, "resource.go.txt", data); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createService(resourceName string) error {
+	// Create application dir if not exist
+	if err := createDirIfNotExists("application"); err != nil {
+		return err
+	}
+
+	// Create services dir if not exist
+	appDir := fmt.Sprintf("%s%c%s", "application", os.PathSeparator, "services")
+	if err := createDirIfNotExists(appDir); err != nil {
+		return err
+	}
+
+	// Create service object for resource
+	data := struct {
+		Resource string
+	}{
+		Resource: pluralize(capitalize(resourceName)),
+	}
+	if err := createFromTemplate(fmt.Sprintf("%ss.go", resourceName), appDir, "service.go.txt", data); err != nil {
 		return err
 	}
 
