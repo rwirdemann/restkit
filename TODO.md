@@ -1,5 +1,4 @@
 # TODO
-- remove usage of RESTKIT_ROOT
 - remove rwirdemann from templates
 - return list of domain objects from service classes
 

@@ -38,11 +38,6 @@ make
 
 ### Environment variables
 ```
-# Root directory where new projects are generated.
-# GOPATH=/Users/ralf/Documents/work/go
-# RESTKIT_ROOT=/Users/ralf/Documents/work/go/src/github.com/rwirdemann
-RESTKIT_ROOT   
-
 # RESTKit template directory
 RESTKIT_TEMPLATES
 ```
