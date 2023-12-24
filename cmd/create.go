@@ -23,10 +23,6 @@ var createCmd = &cobra.Command{
 		if err := validateModule(module); err != nil {
 			return err
 		}
-		restkitPort, err := env.RKPort()
-		if err != nil {
-			return err
-		}
 
 		goPath, err := env.GoPath()
 		if err != nil {
@@ -39,7 +35,7 @@ var createCmd = &cobra.Command{
 			}
 		}
 
-		if err := create(module, projectRoot, restkitPort); err != nil {
+		if err := create(module, projectRoot, 8080); err != nil {
 			return err
 		}
 
@@ -68,11 +64,6 @@ func create(module string, projectRoot string, port int) error {
 		return err
 	}
 
-	restkit := fmt.Sprintf("%s/.restkit", projectRoot)
-	if err := createFileIfNotExist(restkit); err != nil {
-		return err
-	}
-
 	projectName, err := projectName(module)
 	if err != nil {
 		return err
@@ -85,6 +76,10 @@ func create(module string, projectRoot string, port int) error {
 		Project: projectName,
 		Port:    port,
 		Module:  module,
+	}
+
+	if err := createTemplateIfNotExists(projectRoot, data, "restkit.yml.txt", ".restkit.yml"); err != nil {
+		return err
 	}
 
 	if err := createTemplateIfNotExists(projectRoot, data, "go.mod.txt", "go.mod"); err != nil {

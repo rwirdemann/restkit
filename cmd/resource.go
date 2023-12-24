@@ -28,8 +28,8 @@ var resourceCmd = &cobra.Command{
 
 func add(resourceName string) error {
 	// Check if current directory is a RESTkit's project root
-	if !fileSystem.Exists(".restkit") {
-		return fmt.Errorf("current directory contains no .restkit")
+	if !fileSystem.Exists(".restkit.yml") {
+		return fmt.Errorf("current directory contains no .restkit.yml")
 	}
 
 	if err := createHttpHandler(resourceName); err != nil {

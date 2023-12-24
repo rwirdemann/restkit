@@ -1,4 +1,5 @@
 # TODO
+- use port from yaml file
 - http handler delegate request to use in/books_service.go
 - services/books.go should return domain objects
 - create ports/out/books_repository

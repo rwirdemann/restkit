@@ -14,7 +14,7 @@ func TestAddResource(t *testing.T) {
 	mockTemplate := ports.NewMockTemplate(t)
 	template = mockTemplate
 
-	mockFileSystem.EXPECT().Exists(".restkit").Return(true)
+	mockFileSystem.EXPECT().Exists(".restkit.yml").Return(true)
 	mockFileSystem.EXPECT().Exists("context").Return(false)
 	mockFileSystem.EXPECT().CreateDir("context").Return(nil)
 	mockFileSystem.EXPECT().Exists("context/http").Return(false)
@@ -86,7 +86,7 @@ func TestForceAddResource(t *testing.T) {
 	mockTemplate := ports.NewMockTemplate(t)
 	template = mockTemplate
 
-	mockFileSystem.EXPECT().Exists(".restkit").Return(true)
+	mockFileSystem.EXPECT().Exists(".restkit.yml").Return(true)
 	mockFileSystem.EXPECT().Exists("context").Return(false)
 	mockFileSystem.EXPECT().CreateDir("context").Return(nil)
 	mockFileSystem.EXPECT().Exists("context/http").Return(false)
