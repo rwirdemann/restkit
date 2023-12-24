@@ -4,20 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
-	"os"
 	"strconv"
-	"strings"
 )
 
 func RKTemplatePath() (string, error) {
-	p := viper.GetString("RESTKIT_TEMPLATES")
-	if len(p) == 0 {
-		return "", fmt.Errorf("env %s not set", "RESTKIT_TEMPLATES")
+	gopath, err := GoPath()
+	if err != nil {
+		return "", err
 	}
-	if !strings.HasSuffix(p, string(os.PathSeparator)) {
-		p = fmt.Sprintf("%s%s", p, string(os.PathSeparator))
-	}
-	return p, nil
+	return fmt.Sprintf("%s/src/github.com/rwirdemann/restkit/templates", gopath), nil
 }
 
 func RKPort() (int, error) {

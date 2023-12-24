@@ -1,0 +1,1 @@
+RESTKIT_TEMPLATES: /Users/ralf/Documents/work/go/src/github.com/rwirdemann/restkit/templates

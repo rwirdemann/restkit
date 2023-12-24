@@ -1,6 +1,6 @@
 package services
 
-import "{{.Module}}/application/domain"
+import "github.com/rwirdemann/bookstore/application/domain"
 
 type {{.Resource}}s struct {
 }
