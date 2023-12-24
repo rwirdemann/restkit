@@ -1,4 +1,9 @@
 package services
 
-type {{.Resource}} struct {
+import "{{.Module}}/application/domain"
+
+type {{.Resource}}s struct {
+}
+
+func (s {{.Resource}}s) GetAll() ([]domain.{{.Resource}}, error) {
 }
