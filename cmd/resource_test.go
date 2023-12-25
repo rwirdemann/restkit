@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/rwirdemann/restkit/mocks/github.com/rwirdemann/restkit/ports"
+
+	ports2 "github.com/rwirdemann/restkit/ports"
 )
 
 func TestAddResource(t *testing.T) {
@@ -13,6 +15,8 @@ func TestAddResource(t *testing.T) {
 	fileSystem = mockFileSystem
 	mockTemplate := ports.NewMockTemplate(t)
 	template = mockTemplate
+	mockYml := ports.NewMockYml(t)
+	yml = mockYml
 
 	mockFileSystem.EXPECT().Exists(".restkit.yml").Return(true)
 	mockFileSystem.EXPECT().Exists("context").Return(false)
@@ -74,6 +78,8 @@ func TestAddResource(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("application/services/books.go").Return(false)
 	mockTemplate.EXPECT().Create("service.go.txt", "books.go", "application/services", serviceObjectData).Return(nil)
 
+	mockYml.EXPECT().ReadConfig().Return(ports2.Config{}, nil)
+
 	_ = add("book")
 }
 
@@ -85,6 +91,8 @@ func TestForceAddResource(t *testing.T) {
 	fileSystem = mockFileSystem
 	mockTemplate := ports.NewMockTemplate(t)
 	template = mockTemplate
+	mockYml := ports.NewMockYml(t)
+	yml = mockYml
 
 	mockFileSystem.EXPECT().Exists(".restkit.yml").Return(true)
 	mockFileSystem.EXPECT().Exists("context").Return(false)
@@ -147,6 +155,8 @@ func TestForceAddResource(t *testing.T) {
 	mockFileSystem.EXPECT().CreateDir("application/services").Return(nil)
 	mockFileSystem.EXPECT().Exists("application/services/books.go").Return(false)
 	mockTemplate.EXPECT().Create("service.go.txt", "books.go", "application/services", serviceObjectData).Return(nil)
+
+	mockYml.EXPECT().ReadConfig().Return(ports2.Config{}, nil)
 
 	_ = add("book")
 }

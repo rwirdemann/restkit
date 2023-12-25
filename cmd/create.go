@@ -68,6 +68,7 @@ func create(module string, projectRoot string, port int) error {
 	if err != nil {
 		return err
 	}
+
 	data := struct {
 		Project string
 		Port    int

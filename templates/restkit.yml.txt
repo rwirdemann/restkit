@@ -1,2 +1,2 @@
-RESTKIT_PORT: 8080
-MODULE: {{.Module}}
+restkit_port: 8080
+module: {{.Module}}
