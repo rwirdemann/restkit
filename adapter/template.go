@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gobuffalo/packr"
 	"github.com/rwirdemann/restkit/arrays"
-	io2 "github.com/rwirdemann/restkit/io"
+	"github.com/spf13/viper"
 	"io"
 	"os"
 	"strings"
@@ -64,7 +64,7 @@ func (t Template) InsertFragment(filename string, before string, fragment string
 }
 
 func (t Template) Create(templ string, out string, path string, data interface{}) error {
-	templatePath, err := io2.RKTemplatePath()
+	templatePath, err := templatePath()
 	if err != nil {
 		return err
 	}
@@ -86,4 +86,12 @@ func (t Template) Create(templ string, out string, path string, data interface{}
 		return err
 	}
 	return tmpl.ExecuteTemplate(gomod, templ, data)
+}
+
+func templatePath() (string, error) {
+	gopath := viper.GetString("GOPATH")
+	if len(gopath) == 0 {
+		return "", fmt.Errorf("env %s not set", "GOPATH")
+	}
+	return fmt.Sprintf("%s/src/github.com/rwirdemann/restkit/templates", gopath), nil
 }
