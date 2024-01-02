@@ -2,16 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"gopkg.in/yaml.v2"
+	"os"
 )
 
 func main() {
-	router := mux.NewRouter()
+	c, err := readConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	router := mux.NewRouter()
 	log.Println("starting http service on port 8080...")
-	err := router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+	err = router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
 		tpl, _ := route.GetPathTemplate()
 		met, _ := route.GetMethods()
 		log.Println(tpl, met)
@@ -21,8 +28,27 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = http.ListenAndServe(fmt.Sprintf(":%d", {{.Port}}), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", c.Port), router)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+type config struct {
+	Module string `yaml:"module"`
+	Port   int    `yaml:"port"`
+}
+
+func readConfig() (config, error) {
+	data, err := os.ReadFile(".restkit.yml")
+	if err != nil {
+		return config{}, err
+	}
+
+	var c config
+	if err := yaml.Unmarshal(data, &c); err != nil {
+		return config{}, err
+	}
+
+	return c, nil
 }
