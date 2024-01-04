@@ -8,15 +8,13 @@ import (
 	ports2 "github.com/rwirdemann/restkit/ports"
 )
 
+var mockEnv *ports.MockEnv
+var mockFileSystem *ports.MockFileSystem
+var mockTemplate *ports.MockTemplate
+var mockYml *ports.MockYml
+
 func TestAddResource(t *testing.T) {
-	mockEnv := ports.NewMockEnv(t)
-	env = mockEnv
-	mockFileSystem := ports.NewMockFileSystem(t)
-	fileSystem = mockFileSystem
-	mockTemplate := ports.NewMockTemplate(t)
-	template = mockTemplate
-	mockYml := ports.NewMockYml(t)
-	yml = mockYml
+	createMocks(t)
 
 	mockFileSystem.EXPECT().Exists(".restkit.yml").Return(true)
 	mockFileSystem.EXPECT().Exists("context").Return(false)
@@ -83,16 +81,20 @@ func TestAddResource(t *testing.T) {
 	_ = add("book")
 }
 
+func createMocks(t *testing.T) {
+	mockEnv = ports.NewMockEnv(t)
+	env = mockEnv
+	mockFileSystem = ports.NewMockFileSystem(t)
+	fileSystem = mockFileSystem
+	mockTemplate = ports.NewMockTemplate(t)
+	template = mockTemplate
+	mockYml = ports.NewMockYml(t)
+	yml = mockYml
+}
+
 func TestForceAddResource(t *testing.T) {
 	force = true
-	mockEnv := ports.NewMockEnv(t)
-	env = mockEnv
-	mockFileSystem := ports.NewMockFileSystem(t)
-	fileSystem = mockFileSystem
-	mockTemplate := ports.NewMockTemplate(t)
-	template = mockTemplate
-	mockYml := ports.NewMockYml(t)
-	yml = mockYml
+	createMocks(t)
 
 	mockFileSystem.EXPECT().Exists(".restkit.yml").Return(true)
 	mockFileSystem.EXPECT().Exists("context").Return(false)
