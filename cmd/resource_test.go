@@ -92,7 +92,7 @@ func testAddResource(f bool) {
 	serviceObjectData := struct {
 		Resource string
 	}{
-		Resource: "Books",
+		Resource: "Book",
 	}
 	mockFileSystem.EXPECT().Exists("application").Return(false)
 	mockFileSystem.EXPECT().CreateDir("application").Return(nil)

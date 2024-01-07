@@ -154,7 +154,7 @@ func createService(resourceName string) error {
 	data := struct {
 		Resource string
 	}{
-		Resource: pluralize(capitalize(resourceName)),
+		Resource: capitalize(resourceName),
 	}
 	if err := createFromTemplate(fmt.Sprintf("%ss.go", resourceName), appDir, "service.go.txt", data); err != nil {
 		return err
