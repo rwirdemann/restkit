@@ -193,6 +193,10 @@ func createPorts(resourceName string) error {
 		return err
 	}
 
+	if err := createFromTemplate(fmt.Sprintf("%s_repository.go", pluralize(resourceName)), outDir, "repository_out_port.go.txt", data); err != nil {
+		return err
+	}
+
 	return nil
 }
 

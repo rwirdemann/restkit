@@ -83,6 +83,8 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().CreateDir("ports/in").Return(nil)
 	mockFileSystem.EXPECT().Exists("ports/out").Return(false)
 	mockFileSystem.EXPECT().CreateDir("ports/out").Return(nil)
+
+	// Create service port
 	if f {
 		mockFileSystem.EXPECT().Exists("ports/in/books_service.go").Return(true)
 		mockFileSystem.EXPECT().Remove("ports/in/books_service.go").Return(nil)
@@ -90,6 +92,15 @@ func testAddResource(f bool) {
 		mockFileSystem.EXPECT().Exists("ports/in/books_service.go").Return(false)
 	}
 	mockTemplate.EXPECT().Create("in_port.go.txt", "books_service.go", "ports/in", domainObjectData).Return(nil)
+
+	// Create repository port
+	if f {
+		mockFileSystem.EXPECT().Exists("ports/out/books_repository.go").Return(true)
+		mockFileSystem.EXPECT().Remove("ports/out/books_repository.go").Return(nil)
+	} else {
+		mockFileSystem.EXPECT().Exists("ports/out/books_repository.go").Return(false)
+	}
+	mockTemplate.EXPECT().Create("repository_out_port.go.txt", "books_repository.go", "ports/out", domainObjectData).Return(nil)
 
 	serviceObjectData := struct {
 		Resource string
