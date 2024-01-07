@@ -105,7 +105,7 @@ func createHttpHandler(resourceName string) error {
 			"\trouter.HandleFunc(\"/%s\", %sAdapter.GetAll()).Methods(\"GET\")\n",
 			pluralize(resourceName), pluralize(capitalize(resourceName)),
 			pluralize(resourceName), pluralize(resourceName))
-		if err := template.InsertFragment("main.go", "log.Println(\"starting http service on port 8080...\")", fragment); err != nil {
+		if err := template.InsertFragment("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", fragment); err != nil {
 			return err
 		}
 	}

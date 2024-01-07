@@ -53,7 +53,7 @@ func testAddResource(f bool) {
 
 	mockTemplate.EXPECT().Contains("main.go", "booksAdapter := http2.NewBooksHandler()").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
-		"log.Println(\"starting http service on port 8080...\")",
+		"log.Printf(\"starting http service on port %d...\", c.Port)",
 		"booksAdapter := http2.NewBooksHandler()\n"+
 			"\trouter.HandleFunc(\"/books\", booksAdapter.GetAll()).Methods(\"GET\")\n").Return(nil)
 
