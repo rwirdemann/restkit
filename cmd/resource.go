@@ -164,12 +164,12 @@ func createService(resourceName string) error {
 }
 
 func createPorts(resourceName string) error {
-	// Create ports dir if not exists
+	// Create "ports" dir if not exists
 	if err := createDirIfNotExists("ports"); err != nil {
 		return err
 	}
 
-	// Create in dir if not exist
+	// Create "in" dir if not exist
 	inDir := fmt.Sprintf("%s%c%s", "ports", os.PathSeparator, "in")
 	if err := createDirIfNotExists(inDir); err != nil {
 		return err
@@ -184,6 +184,12 @@ func createPorts(resourceName string) error {
 		Project:  projectName,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s_service.go", pluralize(resourceName)), inDir, "in_port.go.txt", data); err != nil {
+		return err
+	}
+
+	// Create "out" dir if not exist
+	outDir := fmt.Sprintf("%s%c%s", "ports", os.PathSeparator, "out")
+	if err := createDirIfNotExists(outDir); err != nil {
 		return err
 	}
 

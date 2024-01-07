@@ -81,6 +81,8 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().CreateDir("ports").Return(nil)
 	mockFileSystem.EXPECT().Exists("ports/in").Return(false)
 	mockFileSystem.EXPECT().CreateDir("ports/in").Return(nil)
+	mockFileSystem.EXPECT().Exists("ports/out").Return(false)
+	mockFileSystem.EXPECT().CreateDir("ports/out").Return(nil)
 	if f {
 		mockFileSystem.EXPECT().Exists("ports/in/books_service.go").Return(true)
 		mockFileSystem.EXPECT().Remove("ports/in/books_service.go").Return(nil)

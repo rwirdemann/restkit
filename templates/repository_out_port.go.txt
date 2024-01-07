@@ -1,0 +1,7 @@
+package out
+
+import "github.com/rwirdemann/{{.Project}}/application/domain"
+
+type {{.Resource}}sRepository interface {
+    GetAll() ([]domain.{{.Resource}}, error)
+}

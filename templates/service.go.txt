@@ -3,6 +3,7 @@ package services
 import "github.com/rwirdemann/bookstore/application/domain"
 
 type {{.Resource}}s struct {
+
 }
 
 func (s {{.Resource}}s) GetAll() ([]domain.{{.Resource}}, error) {
