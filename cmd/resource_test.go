@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/rwirdemann/restkit/mocks/github.com/rwirdemann/restkit/ports"
@@ -70,7 +71,7 @@ func testAddResource(f bool) {
 	}
 	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "application/domain", data).Return(nil)
 
-	domainObjectData := struct {
+	portData := struct {
 		Resource string
 		Project  string
 	}{
@@ -85,24 +86,12 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().CreateDir("ports/out").Return(nil)
 
 	// Create service port
-	if f {
-		mockFileSystem.EXPECT().Exists("ports/in/books_service.go").Return(true)
-		mockFileSystem.EXPECT().Remove("ports/in/books_service.go").Return(nil)
-	} else {
-		mockFileSystem.EXPECT().Exists("ports/in/books_service.go").Return(false)
-	}
-	mockTemplate.EXPECT().Create("in_port.go.txt", "books_service.go", "ports/in", domainObjectData).Return(nil)
+	expectCreatePortFiles(f, "books_service.go", "in_port.go.txt", "books_service.go", "ports/in", portData)
 
 	// Create repository port
-	if f {
-		mockFileSystem.EXPECT().Exists("ports/out/books_repository.go").Return(true)
-		mockFileSystem.EXPECT().Remove("ports/out/books_repository.go").Return(nil)
-	} else {
-		mockFileSystem.EXPECT().Exists("ports/out/books_repository.go").Return(false)
-	}
-	mockTemplate.EXPECT().Create("repository_out_port.go.txt", "books_repository.go", "ports/out", domainObjectData).Return(nil)
+	expectCreatePortFiles(f, "books_repository.go", "repository_out_port.go.txt", "books_repository.go", "ports/out", portData)
 
-	serviceObjectData := struct {
+	serviceData := struct {
 		Resource string
 	}{
 		Resource: "Book",
@@ -112,11 +101,25 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().Exists("application/services").Return(false)
 	mockFileSystem.EXPECT().CreateDir("application/services").Return(nil)
 	mockFileSystem.EXPECT().Exists("application/services/books.go").Return(false)
-	mockTemplate.EXPECT().Create("service.go.txt", "books.go", "application/services", serviceObjectData).Return(nil)
+	mockTemplate.EXPECT().Create("service.go.txt", "books.go", "application/services", serviceData).Return(nil)
 
 	mockYml.EXPECT().ReadConfig().Return(ports2.Config{}, nil)
 
 	_ = add("book")
+}
+
+func expectCreatePortFiles(f bool, portName string, templ string, out string, outPath string, portData struct {
+	Resource string
+	Project  string
+}) {
+	portPath := fmt.Sprintf("%s/%s", outPath, portName)
+	if f {
+		mockFileSystem.EXPECT().Exists(portPath).Return(true)
+		mockFileSystem.EXPECT().Remove(portPath).Return(nil)
+	} else {
+		mockFileSystem.EXPECT().Exists(portPath).Return(false)
+	}
+	mockTemplate.EXPECT().Create(templ, out, outPath, portData).Return(nil)
 }
 
 func createMocks(t *testing.T) {
