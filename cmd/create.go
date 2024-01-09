@@ -83,6 +83,8 @@ func create(module string, projectRoot string, port int) error {
 		return err
 	}
 
+	assertCreated(projectRoot, ".restkit.yml")
+
 	if err := createTemplateIfNotExists(projectRoot, data, "go.mod.txt", "go.mod"); err != nil {
 		return err
 	}
@@ -94,24 +96,20 @@ func create(module string, projectRoot string, port int) error {
 	return nil
 }
 
+func assertCreated(root string, s string) {
+	fn := fmt.Sprintf("%s/%s", root, s)
+	if !fileSystem.Exists(fn) {
+		log.Fatalf("assert: %s...false\n", fn)
+	}
+	log.Printf("assert: %s...true\n", fn)
+}
+
 func createDirIfNotExist(path string) error {
 	if fileSystem.Exists(path) {
 		log.Printf("create: %s exists\n", path)
 	} else {
 		log.Printf("create: %s...ok\n", path)
 		if err := fileSystem.CreateDir(path); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func createFileIfNotExist(path string) error {
-	if fileSystem.Exists(path) {
-		log.Printf("create: %s exists\n", path)
-	} else {
-		log.Printf("create: %s...ok\n", path)
-		if _, err := fileSystem.CreateFile(path); err != nil {
 			return err
 		}
 	}
