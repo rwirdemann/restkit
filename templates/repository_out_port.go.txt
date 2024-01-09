@@ -1,6 +1,6 @@
 package out
 
-import "github.com/rwirdemann/{{.Project}}/application/domain"
+import "{{.Module}}/application/domain"
 
 type {{.Resource}}sRepository interface {
     GetAll() ([]domain.{{.Resource}}, error)

@@ -50,7 +50,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := createPorts(resourceName); err != nil {
+	if err := createPorts(resourceName, config); err != nil {
 		return err
 	}
 
@@ -167,7 +167,7 @@ func createService(resourceName string, config ports.Config) error {
 	return nil
 }
 
-func createPorts(resourceName string) error {
+func createPorts(resourceName string, config ports.Config) error {
 	// Create "ports" dir if not exists
 	if err := createDirIfNotExists("ports"); err != nil {
 		return err
@@ -179,13 +179,12 @@ func createPorts(resourceName string) error {
 		return err
 	}
 
-	projectName := fileSystem.Base(fileSystem.Pwd())
 	data := struct {
 		Resource string
-		Project  string
+		Module   string
 	}{
 		Resource: capitalize(resourceName),
-		Project:  projectName,
+		Module:   config.Module,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s_service.go", pluralize(resourceName)), inDir, "in_port.go.txt", data); err != nil {
 		return err

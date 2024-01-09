@@ -71,12 +71,17 @@ func testAddResource(f bool) {
 	}
 	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "application/domain", data).Return(nil)
 
+	c := ports2.Config{
+		Module: "github.com/rwirdemann/bookstore",
+		Port:   8080,
+	}
+	mockYml.EXPECT().ReadConfig().Return(c, nil)
 	portData := struct {
 		Resource string
-		Project  string
+		Module   string
 	}{
 		Resource: "Book",
-		Project:  "bookstore",
+		Module:   "github.com/rwirdemann/bookstore",
 	}
 	mockFileSystem.EXPECT().Exists("ports").Return(false)
 	mockFileSystem.EXPECT().CreateDir("ports").Return(nil)
@@ -92,11 +97,6 @@ func testAddResource(f bool) {
 	expectCreatePortFiles(f, "books_repository.go", "repository_out_port.go.txt", "books_repository.go", "ports/out", portData)
 
 	// Create service
-	c := ports2.Config{
-		Module: "github.com/rwirdemann/bookstore",
-		Port:   8080,
-	}
-	mockYml.EXPECT().ReadConfig().Return(c, nil)
 	serviceData := struct {
 		Resource          string
 		ResourceLowerCaps string
@@ -120,7 +120,7 @@ func testAddResource(f bool) {
 
 func expectCreatePortFiles(f bool, portName string, templ string, out string, outPath string, portData struct {
 	Resource string
-	Project  string
+	Module   string
 }) {
 	portPath := fmt.Sprintf("%s/%s", outPath, portName)
 	if f {
