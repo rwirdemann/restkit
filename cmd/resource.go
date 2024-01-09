@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/rwirdemann/restkit/ports"
 	"log"
 	"os"
 	"unicode"
@@ -36,7 +37,6 @@ func add(resourceName string) error {
 	if err != nil {
 		return err
 	}
-	log.Println("Module: " + config.Module)
 
 	if err := createHttpHandler(resourceName); err != nil {
 		return err
@@ -46,7 +46,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := createService(resourceName); err != nil {
+	if err := createService(resourceName, config); err != nil {
 		return err
 	}
 
@@ -138,7 +138,7 @@ func createDomainObject(resourceName string) error {
 	return nil
 }
 
-func createService(resourceName string) error {
+func createService(resourceName string, config ports.Config) error {
 	// Create application dir if not exist
 	if err := createDirIfNotExists("application"); err != nil {
 		return err
@@ -154,9 +154,11 @@ func createService(resourceName string) error {
 	data := struct {
 		Resource          string
 		ResourceLowerCaps string
+		Module            string
 	}{
 		Resource:          capitalize(resourceName),
 		ResourceLowerCaps: resourceName,
+		Module:            config.Module,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%ss.go", resourceName), appDir, "service.go.txt", data); err != nil {
 		return err

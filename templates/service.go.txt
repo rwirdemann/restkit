@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/rwirdemann/bookstore/application/domain"
-	"github.com/rwirdemann/bookstore/ports/out"
+	"{{.Module}}/application/domain"
+	"{{.Module}}/ports/out"
 )
 
 type {{.Resource}}s struct {
