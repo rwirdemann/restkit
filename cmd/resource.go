@@ -152,9 +152,11 @@ func createService(resourceName string) error {
 
 	// Create service object for resource
 	data := struct {
-		Resource string
+		Resource          string
+		ResourceLowerCaps string
 	}{
-		Resource: capitalize(resourceName),
+		Resource:          capitalize(resourceName),
+		ResourceLowerCaps: resourceName,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%ss.go", resourceName), appDir, "service.go.txt", data); err != nil {
 		return err

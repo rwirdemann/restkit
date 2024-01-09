@@ -1,10 +1,14 @@
 package services
 
-import "github.com/rwirdemann/bookstore/application/domain"
+import (
+	"github.com/rwirdemann/bookstore/application/domain"
+	"github.com/rwirdemann/bookstore/ports/out"
+)
 
 type {{.Resource}}s struct {
-
+	{{.ResourceLowerCaps}}sRepository out.{{.Resource}}sRepository
 }
 
 func (s {{.Resource}}s) GetAll() ([]domain.{{.Resource}}, error) {
+    return s.{{.ResourceLowerCaps}}sRepository.GetAll()
 }
