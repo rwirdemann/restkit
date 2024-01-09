@@ -14,7 +14,7 @@ rk add --help        // prints help a specific command
 ## Example
 ```bash
 # Create project 
-restkit rk github.com/rwirdemann/bookstore
+rk create github.com/rwirdemann/bookstore
 cd $GOPATH/src/github.com/rwirdemann/bookstore
 
 # Add first resource
