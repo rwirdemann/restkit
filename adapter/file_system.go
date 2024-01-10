@@ -14,7 +14,7 @@ func (f FileSystem) CreateFile(name string) (*os.File, error) {
 }
 
 func (f FileSystem) CreateDir(path string) error {
-	return os.Mkdir(path, os.ModePerm)
+	return os.MkdirAll(path, os.ModePerm)
 }
 
 func (f FileSystem) Exists(path string) bool {
