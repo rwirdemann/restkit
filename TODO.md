@@ -1,9 +1,6 @@
 # TODO
-- create module directories if not exist (example github.com/junk/bikestore)
 - http handler delegate request to use in/books_service.go
 - services/books.go should return domain objects
-- create ports/out/books_repository
-- remove rwirdemann from templates
 - return list of domain objects from service classes
 
 # Done
