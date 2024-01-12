@@ -5,14 +5,14 @@ import (
 	"net/http"
 )
 
-type {{.Resource}}Handler struct {
+type {{.Resource}}sHandler struct {
 }
 
-func New{{.Resource}}sHandler() *{{.Resource}}Handler {
-	return &{{.Resource}}Handler{}
+func New{{.Resource}}sHandler() *{{.Resource}}sHandler {
+	return &{{.Resource}}sHandler{}
 }
 
-func (h {{.Resource}}Handler) GetAll() http.HandlerFunc {
+func (h {{.Resource}}sHandler) GetAll() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
 		all := []string{"hello"}
