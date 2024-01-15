@@ -3,13 +3,18 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+
+    "{{.Module}}/application/services"
 )
 
 type {{.Resource}}sHandler struct {
+	{{.ResourceLowerCaps}}sService services.{{.Resource}}s
 }
 
-func New{{.Resource}}sHandler() *{{.Resource}}sHandler {
-	return &{{.Resource}}sHandler{}
+func New{{.Resource}}sHandler({{.ResourceLowerCaps}}sService services.{{.Resource}}s) *{{.Resource}}sHandler {
+	return &{{.Resource}}sHandler{
+	    {{.ResourceLowerCaps}}sService: {{.ResourceLowerCaps}}sService,
+    }
 }
 
 func (h {{.Resource}}sHandler) GetAll() http.HandlerFunc {

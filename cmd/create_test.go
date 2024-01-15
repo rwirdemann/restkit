@@ -28,6 +28,7 @@ func TestCreateProjectDirectory(t *testing.T) {
 	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore").Return(false)
 	mockFileSystem.EXPECT().CreateDir("/go/src/github.com/rwirdemann/bookstore").Return(nil)
 	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore/.restkit.yml").Return(false)
+	mockFileSystem.EXPECT().AssertCreated("/go/src/github.com/rwirdemann/bookstore/.restkit.yml")
 	mockTemplate.EXPECT().Create("restkit.yml.txt", ".restkit.yml", path, data).Return(nil)
 
 	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore/go.mod").Return(false)

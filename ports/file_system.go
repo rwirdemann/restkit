@@ -9,4 +9,5 @@ type FileSystem interface {
 	Exists(path string) bool
 	Pwd() string
 	Base(path string) string
+	AssertCreated(path string)
 }

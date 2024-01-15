@@ -21,6 +21,39 @@ func (_m *MockFileSystem) EXPECT() *MockFileSystem_Expecter {
 	return &MockFileSystem_Expecter{mock: &_m.Mock}
 }
 
+// AssertCreated provides a mock function with given fields: path
+func (_m *MockFileSystem) AssertCreated(path string) {
+	_m.Called(path)
+}
+
+// MockFileSystem_AssertCreated_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AssertCreated'
+type MockFileSystem_AssertCreated_Call struct {
+	*mock.Call
+}
+
+// AssertCreated is a helper method to define mock.On call
+//   - path string
+func (_e *MockFileSystem_Expecter) AssertCreated(path interface{}) *MockFileSystem_AssertCreated_Call {
+	return &MockFileSystem_AssertCreated_Call{Call: _e.mock.On("AssertCreated", path)}
+}
+
+func (_c *MockFileSystem_AssertCreated_Call) Run(run func(path string)) *MockFileSystem_AssertCreated_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *MockFileSystem_AssertCreated_Call) Return() *MockFileSystem_AssertCreated_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockFileSystem_AssertCreated_Call) RunAndReturn(run func(string)) *MockFileSystem_AssertCreated_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Base provides a mock function with given fields: path
 func (_m *MockFileSystem) Base(path string) string {
 	ret := _m.Called(path)

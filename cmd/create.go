@@ -97,11 +97,8 @@ func create(module string, projectRoot string, port int) error {
 }
 
 func assertCreated(root string, s string) {
-	fn := fmt.Sprintf("%s/%s", root, s)
-	if !fileSystem.Exists(fn) {
-		log.Fatalf("assert: %s...false\n", fn)
-	}
-	log.Printf("assert: %s...true\n", fn)
+	path := fmt.Sprintf("%s/%s", root, s)
+	fileSystem.AssertCreated(path)
 }
 
 func createDirIfNotExist(path string) error {

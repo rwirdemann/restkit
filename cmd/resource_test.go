@@ -33,9 +33,13 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().CreateDir("context/http").Return(nil)
 
 	data := struct {
-		Resource string
+		Resource          string
+		ResourceLowerCaps string
+		Module            string
 	}{
-		Resource: "Book",
+		Resource:          "Book",
+		ResourceLowerCaps: "book",
+		Module:            "github.com/rwirdemann/bookstore",
 	}
 	if f {
 		mockFileSystem.EXPECT().Exists("context/http/books_handler.go").Return(true)
@@ -45,17 +49,20 @@ func testAddResource(f bool) {
 	}
 	mockTemplate.EXPECT().Create("resource_handler.go.txt", "books_handler.go", "context/http", data).Return(nil)
 
-	mockFileSystem.EXPECT().Pwd().Return("github.com/rwirdemann/bookstore")
-	mockFileSystem.EXPECT().Base("github.com/rwirdemann/bookstore").Return("bookstore")
 	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"\"net/http\"",
 		"http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(nil)
 
-	mockTemplate.EXPECT().Contains("main.go", "booksAdapter := http2.NewBooksHandler()").Return(false, nil)
+	mockTemplate.EXPECT().Contains("main.go", "\"github.com/rwirdemann/bookstore/application/services\"").Return(false, nil)
+	mockTemplate.EXPECT().InsertFragment("main.go",
+		"\"net/http\"",
+		"\"github.com/rwirdemann/bookstore/application/services\"").Return(nil)
+
+	mockTemplate.EXPECT().Contains("main.go", "booksAdapter := http2.NewBooksHandler(booksService)").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"log.Printf(\"starting http service on port %d...\", c.Port)",
-		"booksAdapter := http2.NewBooksHandler()\n"+
+		"booksService := services.Books{}\nbooksAdapter := http2.NewBooksHandler(booksService)\n"+
 			"\trouter.HandleFunc(\"/books\", booksAdapter.GetAll()).Methods(\"GET\")\n").Return(nil)
 
 	mockFileSystem.EXPECT().Exists("application").Return(false)
@@ -63,13 +70,18 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().Exists("application/domain").Return(false)
 	mockFileSystem.EXPECT().CreateDir("application/domain").Return(nil)
 
+	domainObjectData := struct {
+		Resource string
+	}{
+		Resource: "Book",
+	}
 	if f {
 		mockFileSystem.EXPECT().Exists("application/domain/book.go").Return(true)
 		mockFileSystem.EXPECT().Remove("application/domain/book.go").Return(nil)
 	} else {
 		mockFileSystem.EXPECT().Exists("application/domain/book.go").Return(false)
 	}
-	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "application/domain", data).Return(nil)
+	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "application/domain", domainObjectData).Return(nil)
 
 	c := ports2.Config{
 		Module: "github.com/rwirdemann/bookstore",

@@ -2,11 +2,19 @@ package adapter
 
 import (
 	"errors"
+	"log"
 	"os"
 	"path/filepath"
 )
 
 type FileSystem struct {
+}
+
+func (f FileSystem) AssertCreated(path string) {
+	if !f.Exists(path) {
+		log.Fatalf("assert: %s...false\n", path)
+	}
+	log.Printf("assert: %s...true\n", path)
 }
 
 func (f FileSystem) CreateFile(name string) (*os.File, error) {

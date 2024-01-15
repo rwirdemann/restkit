@@ -38,7 +38,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := createHttpHandler(resourceName); err != nil {
+	if err := createHttpHandler(resourceName, config); err != nil {
 		return err
 	}
 
@@ -61,7 +61,7 @@ func add(resourceName string) error {
 	return nil
 }
 
-func createHttpHandler(resourceName string) error {
+func createHttpHandler(resourceName string, config ports.Config) error {
 	// Create context dir if not exists
 	if err := createDirIfNotExists("context"); err != nil {
 		return err
@@ -75,35 +75,54 @@ func createHttpHandler(resourceName string) error {
 
 	// Create resource handler file
 	data := struct {
-		Resource string
+		Resource          string
+		ResourceLowerCaps string
+		Module            string
 	}{
-		Resource: capitalize(resourceName),
+		Resource:          capitalize(resourceName),
+		ResourceLowerCaps: resourceName,
+		Module:            config.Module,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s_handler.go", pluralize(resourceName)), httpDir, "resource_handler.go.txt", data); err != nil {
 		return err
 	}
 
 	// Insert adapter import statement into main file
-	projectName := fileSystem.Base(fileSystem.Pwd())
-	f := fmt.Sprintf("http2 \"github.com/rwirdemann/%s/context/http\"", projectName)
-	if contains, _ := template.Contains("main.go", f); contains {
-		log.Printf("insert: %s...already there\n", "import")
+	httpImport := fmt.Sprintf("http2 \"%s/context/http\"", config.Module)
+	if contains, _ := template.Contains("main.go", httpImport); contains {
+		log.Printf("insert: %s...already there\n", "import http")
 	} else {
 		log.Printf("insert: %s...ok\n", "import")
-		if err := template.InsertFragment("main.go", "\"net/http\"", f); err != nil {
+		if err := template.InsertFragment("main.go", "\"net/http\"", httpImport); err != nil {
+			return err
+		}
+	}
+
+	// Insert service import statement into main file
+	servicesImport := fmt.Sprintf("\"%s/application/services\"", config.Module)
+	if contains, _ := template.Contains("main.go", servicesImport); contains {
+		log.Printf("insert: %s...already there\n", "import services")
+	} else {
+		log.Printf("insert: %s...ok\n", "import")
+		if err := template.InsertFragment("main.go", "\"net/http\"", servicesImport); err != nil {
 			return err
 		}
 	}
 
 	// Insert create adapter into main file
-	check := fmt.Sprintf("%sAdapter := http2.New%sHandler()", pluralize(resourceName), pluralize(capitalize(resourceName)))
+	check := fmt.Sprintf("%sAdapter := http2.New%sHandler(%sService)", pluralize(resourceName), pluralize(capitalize(resourceName)), pluralize(resourceName))
 	if contains, _ := template.Contains("main.go", check); contains {
 		log.Printf("insert: %s...already there\n", "http handler")
 	} else {
 		log.Printf("insert: %s...ok\n", "http handler")
-		fragment := fmt.Sprintf("%sAdapter := http2.New%sHandler()\n"+
+
+		// insert booksService := services.Books{}
+
+		fragment := fmt.Sprintf("%sService := services.%s{}\n"+
+			"%sAdapter := http2.New%sHandler(%sService)\n"+
 			"\trouter.HandleFunc(\"/%s\", %sAdapter.GetAll()).Methods(\"GET\")\n",
 			pluralize(resourceName), pluralize(capitalize(resourceName)),
+			pluralize(resourceName), pluralize(capitalize(resourceName)), pluralize(resourceName),
 			pluralize(resourceName), pluralize(resourceName))
 		if err := template.InsertFragment("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", fragment); err != nil {
 			return err
