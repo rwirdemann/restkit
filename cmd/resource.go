@@ -88,25 +88,13 @@ func createHttpHandler(resourceName string, config ports.Config) error {
 	}
 
 	// Insert adapter import statement into main file
-	httpImport := fmt.Sprintf("http2 \"%s/context/http\"", config.Module)
-	if contains, _ := template.Contains("main.go", httpImport); contains {
-		log.Printf("insert: %s...already there\n", "import http")
-	} else {
-		log.Printf("insert: %s...ok\n", "import")
-		if err := template.InsertFragment("main.go", "\"net/http\"", httpImport); err != nil {
-			return err
-		}
+	if err := insertImportStatement(fmt.Sprintf("http2 \"%s/context/http\"", config.Module)); err != nil {
+		return err
 	}
 
 	// Insert service import statement into main file
-	servicesImport := fmt.Sprintf("\"%s/application/services\"", config.Module)
-	if contains, _ := template.Contains("main.go", servicesImport); contains {
-		log.Printf("insert: %s...already there\n", "import services")
-	} else {
-		log.Printf("insert: %s...ok\n", "import")
-		if err := template.InsertFragment("main.go", "\"net/http\"", servicesImport); err != nil {
-			return err
-		}
+	if err := insertImportStatement(fmt.Sprintf("\"%s/application/services\"", config.Module)); err != nil {
+		return err
 	}
 
 	// Insert create adapter into main file
@@ -129,6 +117,18 @@ func createHttpHandler(resourceName string, config ports.Config) error {
 		}
 	}
 
+	return nil
+}
+
+func insertImportStatement(stmt string) error {
+	if contains, _ := template.Contains("main.go", stmt); contains {
+		log.Printf("insert: %s...already there\n", "import services")
+	} else {
+		log.Printf("insert: %s...ok\n", "import")
+		if err := template.InsertFragment("main.go", "\"net/http\"", stmt); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
