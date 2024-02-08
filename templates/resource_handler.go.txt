@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+    "{{.Module}}/application/domain"
     "{{.Module}}/application/services"
 )
 
@@ -20,12 +21,16 @@ func New{{.Resource}}sHandler({{.ResourceLowerCaps}}sService services.{{.Resourc
 func (h {{.Resource}}sHandler) GetAll() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
-		all := []string{"hello"}
+		resources, err := h.{{.ResourceLowerCaps}}sService.GetAll()
+		if err != nil {
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		b, err := json.Marshal(
 			struct {
-				All []string `json:"all"`
+				{{.Resource}}s []domain.{{.Resource}} `json:"{{.ResourceLowerCaps}}s"`
 			}{
-				all,
+				resources,
 			},
 		)
 		if err != nil {
