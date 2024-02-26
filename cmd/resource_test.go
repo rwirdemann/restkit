@@ -31,6 +31,8 @@ func testAddResource(f bool) {
 	mockFileSystem.EXPECT().CreateDir("context").Return(nil)
 	mockFileSystem.EXPECT().Exists("context/http").Return(false)
 	mockFileSystem.EXPECT().CreateDir("context/http").Return(nil)
+	mockFileSystem.EXPECT().Exists("context/postgres").Return(false)
+	mockFileSystem.EXPECT().CreateDir("context/postgres").Return(nil)
 
 	data := struct {
 		Resource          string

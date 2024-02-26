@@ -42,6 +42,10 @@ func add(resourceName string) error {
 		return err
 	}
 
+	if err := createPostgresAdapter(resourceName); err != nil {
+		return err
+	}
+
 	if err := createDomainObject(resourceName); err != nil {
 		return err
 	}
@@ -55,6 +59,21 @@ func add(resourceName string) error {
 	}
 
 	if err := gotools.Fmt(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createPostgresAdapter(resourceName string) error {
+	// Create context dir if not exists
+	if err := createDirIfNotExists("context"); err != nil {
+		return err
+	}
+
+	// Create postgres dir if not exist
+	postgresDir := fmt.Sprintf("%s%c%s", "context", os.PathSeparator, "postgres")
+	if err := createDirIfNotExists(postgresDir); err != nil {
 		return err
 	}
 
