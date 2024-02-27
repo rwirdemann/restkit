@@ -42,7 +42,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := createPostgresAdapter(resourceName); err != nil {
+	if err := createPostgresAdapter(resourceName, config); err != nil {
 		return err
 	}
 
@@ -65,7 +65,7 @@ func add(resourceName string) error {
 	return nil
 }
 
-func createPostgresAdapter(resourceName string) error {
+func createPostgresAdapter(resourceName string, config ports.Config) error {
 	// Create context dir if not exists
 	if err := createDirIfNotExists("context"); err != nil {
 		return err
@@ -74,6 +74,20 @@ func createPostgresAdapter(resourceName string) error {
 	// Create postgres dir if not exist
 	postgresDir := fmt.Sprintf("%s%c%s", "context", os.PathSeparator, "postgres")
 	if err := createDirIfNotExists(postgresDir); err != nil {
+		return err
+	}
+
+	// Create resource handler file
+	data := struct {
+		Resource          string
+		ResourceLowerCaps string
+		Module            string
+	}{
+		Resource:          capitalize(resourceName),
+		ResourceLowerCaps: resourceName,
+		Module:            config.Module,
+	}
+	if err := createFromTemplate(fmt.Sprintf("%s_repository.go", pluralize(resourceName)), postgresDir, "postgres_repository.go.txt", data); err != nil {
 		return err
 	}
 

@@ -51,6 +51,14 @@ func testAddResource(f bool) {
 	}
 	mockTemplate.EXPECT().Create("resource_handler.go.txt", "books_handler.go", "context/http", data).Return(nil)
 
+	if f {
+		mockFileSystem.EXPECT().Exists("context/postgres/books_repository.go").Return(true)
+		mockFileSystem.EXPECT().Remove("context/postgres/books_repository.go").Return(nil)
+	} else {
+		mockFileSystem.EXPECT().Exists("context/postgres/books_repository.go").Return(false)
+	}
+	mockTemplate.EXPECT().Create("postgres_repository.go.txt", "books_repository.go", "context/postgres", data).Return(nil)
+
 	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(false, nil)
 	mockTemplate.EXPECT().InsertFragment("main.go",
 		"\"net/http\"",

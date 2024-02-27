@@ -1,0 +1,14 @@
+package http
+
+import "{{.Module}}/application/domain"
+
+type {{.Resource}}sRepository struct {
+}
+
+func New{{.Resource}}sRepository() *{{.Resource}}sRepository {
+	return &{{.Resource}}sRepository{}
+}
+
+func (r {{.Resource}}sRepository) GetAll() ([]domain.{{.Resource}}, error) {
+	return []domain.{{.Resource}}{}, nil
+}
