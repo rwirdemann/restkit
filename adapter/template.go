@@ -2,13 +2,14 @@ package adapter
 
 import (
 	"fmt"
-	"github.com/gobuffalo/packr"
-	"github.com/rwirdemann/restkit/arrays"
-	"github.com/spf13/viper"
 	"io"
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/gobuffalo/packr"
+	"github.com/rwirdemann/restkit/arrays"
+	"github.com/spf13/viper"
 )
 
 type Template struct {
@@ -38,7 +39,7 @@ func ReadLines(filename string) ([]string, error) {
 	return lines, nil
 }
 
-func (t Template) InsertFragment(filename string, before string, fragment string) error {
+func (t Template) Insert(filename string, before string, fragment string) error {
 	lines, err := ReadLines(filename)
 	if err != nil {
 		return err

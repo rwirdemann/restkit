@@ -115,8 +115,8 @@ func (_c *MockTemplate_Create_Call) RunAndReturn(run func(string, string, string
 	return _c
 }
 
-// InsertFragment provides a mock function with given fields: filename, before, fragment
-func (_m *MockTemplate) InsertFragment(filename string, before string, fragment string) error {
+// Insert provides a mock function with given fields: filename, before, fragment
+func (_m *MockTemplate) Insert(filename string, before string, fragment string) error {
 	ret := _m.Called(filename, before, fragment)
 
 	var r0 error
@@ -129,32 +129,32 @@ func (_m *MockTemplate) InsertFragment(filename string, before string, fragment 
 	return r0
 }
 
-// MockTemplate_InsertFragment_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'InsertFragment'
-type MockTemplate_InsertFragment_Call struct {
+// MockTemplate_Insert_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Insert'
+type MockTemplate_Insert_Call struct {
 	*mock.Call
 }
 
-// InsertFragment is a helper method to define mock.On call
+// Insert is a helper method to define mock.On call
 //   - filename string
 //   - before string
 //   - fragment string
-func (_e *MockTemplate_Expecter) InsertFragment(filename interface{}, before interface{}, fragment interface{}) *MockTemplate_InsertFragment_Call {
-	return &MockTemplate_InsertFragment_Call{Call: _e.mock.On("InsertFragment", filename, before, fragment)}
+func (_e *MockTemplate_Expecter) Insert(filename interface{}, before interface{}, fragment interface{}) *MockTemplate_Insert_Call {
+	return &MockTemplate_Insert_Call{Call: _e.mock.On("Insert", filename, before, fragment)}
 }
 
-func (_c *MockTemplate_InsertFragment_Call) Run(run func(filename string, before string, fragment string)) *MockTemplate_InsertFragment_Call {
+func (_c *MockTemplate_Insert_Call) Run(run func(filename string, before string, fragment string)) *MockTemplate_Insert_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(string), args[1].(string), args[2].(string))
 	})
 	return _c
 }
 
-func (_c *MockTemplate_InsertFragment_Call) Return(_a0 error) *MockTemplate_InsertFragment_Call {
+func (_c *MockTemplate_Insert_Call) Return(_a0 error) *MockTemplate_Insert_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockTemplate_InsertFragment_Call) RunAndReturn(run func(string, string, string) error) *MockTemplate_InsertFragment_Call {
+func (_c *MockTemplate_Insert_Call) RunAndReturn(run func(string, string, string) error) *MockTemplate_Insert_Call {
 	_c.Call.Return(run)
 	return _c
 }

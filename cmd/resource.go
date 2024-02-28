@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rwirdemann/restkit/ports"
 	"log"
 	"os"
 	"unicode"
+
+	"github.com/rwirdemann/restkit/ports"
 
 	"github.com/rwirdemann/restkit/gotools"
 	"github.com/spf13/cobra"
@@ -131,21 +132,19 @@ func createHttpHandler(resourceName string, config ports.Config) error {
 	}
 
 	// Insert create adapter into main file
-	check := fmt.Sprintf("%sAdapter := http2.New%sHandler(%sService)", pluralize(resourceName), pluralize(capitalize(resourceName)), pluralize(resourceName))
+	builder := gotools.FragmentBuilder{}
+	builder.Append("%rsAdapter := http2.New%RsHandler(%rsService)")
+	check := builder.Build(resourceName)
 	if contains, _ := template.Contains("main.go", check); contains {
 		log.Printf("insert: %s...already there\n", "http handler")
 	} else {
 		log.Printf("insert: %s...ok\n", "http handler")
-
-		// insert booksService := services.Books{}
-
-		fragment := fmt.Sprintf("%sService := services.%s{}\n"+
-			"%sAdapter := http2.New%sHandler(%sService)\n"+
-			"\trouter.HandleFunc(\"/%s\", %sAdapter.GetAll()).Methods(\"GET\")\n",
-			pluralize(resourceName), pluralize(capitalize(resourceName)),
-			pluralize(resourceName), pluralize(capitalize(resourceName)), pluralize(resourceName),
-			pluralize(resourceName), pluralize(resourceName))
-		if err := template.InsertFragment("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", fragment); err != nil {
+		builder := gotools.FragmentBuilder{}
+		builder.Append("%rsService := services.%Rs{}")
+		builder.Append("%rsAdapter := http2.New%RsHandler(%rsService)")
+		builder.Append("\trouter.HandleFunc(\"/%rs\", %rsAdapter.GetAll()).Methods(\"GET\")")
+		f := builder.Build(resourceName)
+		if err := template.Insert("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", f); err != nil {
 			return err
 		}
 	}
@@ -155,10 +154,10 @@ func createHttpHandler(resourceName string, config ports.Config) error {
 
 func insertImportStatement(stmt string) error {
 	if contains, _ := template.Contains("main.go", stmt); contains {
-		log.Printf("insert: %s...already there\n", "import services")
+		log.Printf("insert: %s...already there\n", stmt)
 	} else {
 		log.Printf("insert: %s...ok\n", "import")
-		if err := template.InsertFragment("main.go", "\"net/http\"", stmt); err != nil {
+		if err := template.Insert("main.go", "\"net/http\"", stmt); err != nil {
 			return err
 		}
 	}
