@@ -39,7 +39,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := createHttpHandler(resourceName, config); err != nil {
+	if err := createHttpAdapter(resourceName, config); err != nil {
 		return err
 	}
 
@@ -95,7 +95,7 @@ func createPostgresAdapter(resourceName string, config ports.Config) error {
 	return nil
 }
 
-func createHttpHandler(resourceName string, config ports.Config) error {
+func createHttpAdapter(resourceName string, config ports.Config) error {
 	// Create context dir if not exists
 	if err := createDirIfNotExists("context"); err != nil {
 		return err
@@ -121,6 +121,10 @@ func createHttpHandler(resourceName string, config ports.Config) error {
 		return err
 	}
 
+	if err := insertImportStatement(fmt.Sprintf("postgres \"%s/context/postgres\"", config.Module)); err != nil {
+		return err
+	}
+
 	// Insert adapter import statement into main file
 	if err := insertImportStatement(fmt.Sprintf("http2 \"%s/context/http\"", config.Module)); err != nil {
 		return err
@@ -140,8 +144,9 @@ func createHttpHandler(resourceName string, config ports.Config) error {
 	} else {
 		log.Printf("insert: %s...ok\n", "http handler")
 		builder := gotools.FragmentBuilder{}
-		builder.Append("%rsService := services.%Rs{}")
-		builder.Append("%rsAdapter := http2.New%RsHandler(%rsService)")
+		builder.Append("%rsRepository := postgres.New%RsRepository()")
+		builder.Append("%rsService := services.New%RsService(%rsRepository)")
+		builder.Append("%rsAdapter := http2.New%RsHandler(*%rsService)")
 		builder.Append("\trouter.HandleFunc(\"/%rs\", %rsAdapter.GetAll()).Methods(\"GET\")")
 		f := builder.Build(resourceName)
 		if err := template.Insert("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", f); err != nil {

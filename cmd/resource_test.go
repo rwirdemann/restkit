@@ -62,6 +62,11 @@ func testAddResource(f bool) {
 	mockTemplate.EXPECT().Contains("main.go", "http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(false, nil)
 	mockTemplate.EXPECT().Insert("main.go",
 		"\"net/http\"",
+		"postgres \"github.com/rwirdemann/bookstore/context/postgres\"").Return(nil)
+
+	mockTemplate.EXPECT().Contains("main.go", "postgres \"github.com/rwirdemann/bookstore/context/postgres\"").Return(false, nil)
+	mockTemplate.EXPECT().Insert("main.go",
+		"\"net/http\"",
 		"http2 \"github.com/rwirdemann/bookstore/context/http\"").Return(nil)
 
 	mockTemplate.EXPECT().Contains("main.go", "\"github.com/rwirdemann/bookstore/application/services\"").Return(false, nil)
@@ -72,7 +77,7 @@ func testAddResource(f bool) {
 	mockTemplate.EXPECT().Contains("main.go", "booksAdapter := http2.NewBooksHandler(booksService)").Return(false, nil)
 	mockTemplate.EXPECT().Insert("main.go",
 		"log.Printf(\"starting http service on port %d...\", c.Port)",
-		"booksService := services.Books{}\nbooksAdapter := http2.NewBooksHandler(booksService)\n"+
+		"booksRepository := postgres.NewBooksRepository()\nbooksService := services.NewBooksService(booksRepository)\nbooksAdapter := http2.NewBooksHandler(*booksService)\n"+
 			"\trouter.HandleFunc(\"/books\", booksAdapter.GetAll()).Methods(\"GET\")").Return(nil)
 
 	mockFileSystem.EXPECT().Exists("application").Return(false)

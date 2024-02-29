@@ -9,7 +9,7 @@ type {{.Resource}}s struct {
 	{{.ResourceLowerCaps}}sRepository out.{{.Resource}}sRepository
 }
 
-func News{{.Resource}}Service(repository out.{{.Resource}}sRepository) *{{.Resource}}s {
+func New{{.Resource}}sService(repository out.{{.Resource}}sRepository) *{{.Resource}}s {
 	return &{{.Resource}}s{
 	    {{.ResourceLowerCaps}}sRepository: repository}
 }
