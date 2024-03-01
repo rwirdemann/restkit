@@ -59,7 +59,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := updateMain(config); err != nil {
+	if err := updateMain(resourceName, config); err != nil {
 		return err
 	}
 
@@ -99,7 +99,7 @@ func createPostgresAdapter(resourceName string, config ports.Config) error {
 	return nil
 }
 
-func updateMain(config ports.Config) error {
+func updateMain(resourceName string, config ports.Config) error {
 	// Import postgres adatper
 	if err := insertImportStatement(fmt.Sprintf("postgres \"%s/context/postgres\"", config.Module)); err != nil {
 		return err
@@ -113,6 +113,25 @@ func updateMain(config ports.Config) error {
 	// Import services
 	if err := insertImportStatement(fmt.Sprintf("\"%s/application/services\"", config.Module)); err != nil {
 		return err
+	}
+
+	// Insert create adapter into main file
+	builder := gotools.FragmentBuilder{}
+	builder.Append("%rsAdapter := http2.New%RsHandler(%rsService)")
+	check := builder.Build(resourceName)
+	if contains, _ := template.Contains("main.go", check); contains {
+		log.Printf("insert: %s...already there\n", "http handler")
+	} else {
+		log.Printf("insert: %s...ok\n", "http handler")
+		builder := gotools.FragmentBuilder{}
+		builder.Append("%rsRepository := postgres.New%RsRepository()")
+		builder.Append("%rsService := services.New%RsService(%rsRepository)")
+		builder.Append("%rsAdapter := http2.New%RsHandler(*%rsService)")
+		builder.Append("\trouter.HandleFunc(\"/%rs\", %rsAdapter.GetAll()).Methods(\"GET\")")
+		f := builder.Build(resourceName)
+		if err := template.Insert("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", f); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -142,25 +161,6 @@ func createHttpAdapter(resourceName string, config ports.Config) error {
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s_handler.go", pluralize(resourceName)), httpDir, "resource_handler.go.txt", data); err != nil {
 		return err
-	}
-
-	// Insert create adapter into main file
-	builder := gotools.FragmentBuilder{}
-	builder.Append("%rsAdapter := http2.New%RsHandler(%rsService)")
-	check := builder.Build(resourceName)
-	if contains, _ := template.Contains("main.go", check); contains {
-		log.Printf("insert: %s...already there\n", "http handler")
-	} else {
-		log.Printf("insert: %s...ok\n", "http handler")
-		builder := gotools.FragmentBuilder{}
-		builder.Append("%rsRepository := postgres.New%RsRepository()")
-		builder.Append("%rsService := services.New%RsService(%rsRepository)")
-		builder.Append("%rsAdapter := http2.New%RsHandler(*%rsService)")
-		builder.Append("\trouter.HandleFunc(\"/%rs\", %rsAdapter.GetAll()).Methods(\"GET\")")
-		f := builder.Build(resourceName)
-		if err := template.Insert("main.go", "log.Printf(\"starting http service on port %d...\", c.Port)", f); err != nil {
-			return err
-		}
 	}
 
 	return nil
