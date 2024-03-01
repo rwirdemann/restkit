@@ -59,6 +59,10 @@ func add(resourceName string) error {
 		return err
 	}
 
+	if err := updateMain(config); err != nil {
+		return err
+	}
+
 	if err := gotools.Fmt(); err != nil {
 		return err
 	}
@@ -95,6 +99,25 @@ func createPostgresAdapter(resourceName string, config ports.Config) error {
 	return nil
 }
 
+func updateMain(config ports.Config) error {
+	// Import postgres adatper
+	if err := insertImportStatement(fmt.Sprintf("postgres \"%s/context/postgres\"", config.Module)); err != nil {
+		return err
+	}
+
+	// Import http adapter
+	if err := insertImportStatement(fmt.Sprintf("http2 \"%s/context/http\"", config.Module)); err != nil {
+		return err
+	}
+
+	// Import services
+	if err := insertImportStatement(fmt.Sprintf("\"%s/application/services\"", config.Module)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func createHttpAdapter(resourceName string, config ports.Config) error {
 	// Create context dir if not exists
 	if err := createDirIfNotExists("context"); err != nil {
@@ -107,7 +130,7 @@ func createHttpAdapter(resourceName string, config ports.Config) error {
 		return err
 	}
 
-	// Create resource handler file
+	// Create http adapter file
 	data := struct {
 		Resource          string
 		ResourceLowerCaps string
@@ -118,20 +141,6 @@ func createHttpAdapter(resourceName string, config ports.Config) error {
 		Module:            config.Module,
 	}
 	if err := createFromTemplate(fmt.Sprintf("%s_handler.go", pluralize(resourceName)), httpDir, "resource_handler.go.txt", data); err != nil {
-		return err
-	}
-
-	if err := insertImportStatement(fmt.Sprintf("postgres \"%s/context/postgres\"", config.Module)); err != nil {
-		return err
-	}
-
-	// Insert adapter import statement into main file
-	if err := insertImportStatement(fmt.Sprintf("http2 \"%s/context/http\"", config.Module)); err != nil {
-		return err
-	}
-
-	// Insert service import statement into main file
-	if err := insertImportStatement(fmt.Sprintf("\"%s/application/services\"", config.Module)); err != nil {
 		return err
 	}
 
