@@ -1,2 +1,5 @@
 port: 8080
 module: {{.Module}}
+database:
+    url: {{.DatabaseURL}}
+    name: {{.DatabaseName}}

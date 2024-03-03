@@ -1,8 +1,12 @@
 package http
 
-import "{{.Module}}/application/domain"
+import {
+	"{{.Module}}/application/domain"
+	"github.com/jackc/pgx/v5/pgxpool"
+}
 
 type {{.Resource}}sRepository struct {
+	dbpool *pgxpool.Pool
 }
 
 func New{{.Resource}}sRepository() *{{.Resource}}sRepository {
