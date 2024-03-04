@@ -117,7 +117,7 @@ func updateMain(resourceName string, config ports.Config) error {
 
 	// Insert create adapter into main file
 	builder := gotools.FragmentBuilder{}
-	builder.Append("%rsAdapter := http2.New%RsHandler(%rsService)")
+	builder.Append("%rsRepository := postgres.New%RsRepository()")
 	check := builder.Build(resourceName)
 	if contains, _ := template.Contains("main.go", check); contains {
 		log.Printf("insert: %s...already there\n", "http handler")
