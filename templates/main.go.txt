@@ -34,9 +34,15 @@ func main() {
 	}
 }
 
+type database struct {
+	Name string `yaml:"name"`
+	Url  string `yaml:"url"`
+}
+
 type config struct {
-	Module string `yaml:"module"`
-	Port   int    `yaml:"port"`
+	Module   string   `yaml:"module"`
+	Port     int      `yaml:"port"`
+	Database database `yaml:"database"`
 }
 
 func readConfig() (config, error) {

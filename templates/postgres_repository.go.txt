@@ -1,15 +1,16 @@
-package http
+package postgres
 
-import {
-	"{{.Module}}/application/domain"
+import (
 	"github.com/jackc/pgx/v5/pgxpool"
-}
+	"{{.Module}}/application/domain"
+	"{{.Module}}/ports/out"
+)
 
 type {{.Resource}}sRepository struct {
 	dbpool *pgxpool.Pool
 }
 
-func New{{.Resource}}sRepository() *{{.Resource}}sRepository {
+func New{{.Resource}}sRepository() out.{{.Resource}}sRepository {
 	return &{{.Resource}}sRepository{}
 }
 
