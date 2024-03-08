@@ -117,14 +117,14 @@ func updateMain(resourceName string, config ports.Config) error {
 
 	// Insert create adapter into main file
 	builder := gotools.FragmentBuilder{}
-	builder.Append("%rsRepository := postgres.New%RsRepository()")
+	builder.Append("%rsRepository := postgres.New%RsRepository(dbpool)")
 	check := builder.Build(resourceName)
 	if contains, _ := template.Contains("main.go", check); contains {
 		log.Printf("insert: %s...already there\n", "http handler")
 	} else {
 		log.Printf("insert: %s...ok\n", "http handler")
 		builder := gotools.FragmentBuilder{}
-		builder.Append("%rsRepository := postgres.New%RsRepository()")
+		builder.Append("%rsRepository := postgres.New%RsRepository(dbpool)")
 		builder.Append("%rsService := services.New%RsService(%rsRepository)")
 		builder.Append("%rsAdapter := http2.New%RsHandler(*%rsService)")
 		builder.Append("\trouter.HandleFunc(\"/%rs\", %rsAdapter.GetAll()).Methods(\"GET\")")

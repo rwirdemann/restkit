@@ -22,11 +22,10 @@ func TestCreateProjectDirectory(t *testing.T) {
 		DatabaseURL  string
 		DatabaseName string
 	}{
-		Project:      "bookstore",
-		Port:         8080,
-		Module:       "github.com/rwirdemann/bookstore",
-		DatabaseURL:  "postgres://ralf@localhost:5432/",
-		DatabaseName: "bookstore",
+		Project:     "bookstore",
+		Port:        8080,
+		Module:      "github.com/rwirdemann/bookstore",
+		DatabaseURL: "postgres://ralf@localhost:5432/bookstore",
 	}
 
 	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore").Return(false)

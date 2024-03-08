@@ -10,8 +10,8 @@ type {{.Resource}}sRepository struct {
 	dbpool *pgxpool.Pool
 }
 
-func New{{.Resource}}sRepository() out.{{.Resource}}sRepository {
-	return &{{.Resource}}sRepository{}
+func New{{.Resource}}sRepository(dbpool *pgxpool.Pool) out.{{.Resource}}sRepository {
+	return &{{.Resource}}sRepository{dbpool}
 }
 
 func (r {{.Resource}}sRepository) GetAll() ([]domain.{{.Resource}}, error) {

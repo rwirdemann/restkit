@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/gorilla/mux"
 	"gopkg.in/yaml.v2"
@@ -15,6 +17,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	dbpool, err := pgxpool.New(context.Background(), c.DatabaseURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbpool.Close()
 
 	router := mux.NewRouter()
     log.Printf("starting http service on port %d...", c.Port)
@@ -40,9 +48,9 @@ type database struct {
 }
 
 type config struct {
-	Module   string   `yaml:"module"`
-	Port     int      `yaml:"port"`
-	Database database `yaml:"database"`
+	Module      string   `yaml:"module"`
+	Port        int      `yaml:"port"`
+	DatabaseURL string   `yaml:"databaseURL"`
 }
 
 func readConfig() (config, error) {
