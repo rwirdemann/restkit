@@ -15,7 +15,7 @@ func validateModule(module string) error {
 	return nil
 }
 
-func projectName(module string) (string, error) {
+func ProjectName(module string) (string, error) {
 	if err := validateModule(module); err != nil {
 		return "", err
 	}

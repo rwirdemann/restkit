@@ -1,14 +1,14 @@
 package main
 
 import (
-	"context"
 	"fmt"
+    _ "github.com/lib/pq"
 	"log"
 	"net/http"
-	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/gorilla/mux"
 	"gopkg.in/yaml.v2"
+    "github.com/jmoiron/sqlx"
 	"os"
 )
 
@@ -18,11 +18,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dbpool, err := pgxpool.New(context.Background(), c.DatabaseURL)
+	dataSourceName := fmt.Sprintf("user=%s dbname=%s sslmode=disable", c.Database.User, c.Database.Name)
+	db, err := sqlx.Connect(c.Database.Driver, dataSourceName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer dbpool.Close()
+	defer db.Close()
 
 	router := mux.NewRouter()
     log.Printf("starting http service on port %d...", c.Port)
@@ -43,14 +44,16 @@ func main() {
 }
 
 type database struct {
-	Name string `yaml:"name"`
-	Url  string `yaml:"url"`
+    Driver   string `yaml:"driver"`
+	Name     string `yaml:"name"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
 }
 
 type config struct {
-	Module      string   `yaml:"module"`
-	Port        int      `yaml:"port"`
-	DatabaseURL string   `yaml:"databaseURL"`
+	Module   string   `yaml:"module"`
+	Port     int      `yaml:"port"`
+	Database database `yaml:"database"`
 }
 
 func readConfig() (config, error) {

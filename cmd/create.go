@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
 
 	"github.com/spf13/cobra"
 )
@@ -64,22 +65,31 @@ func create(module string, projectRoot string, port int) error {
 		return err
 	}
 
-	projectName, err := projectName(module)
+	projectName, err := ProjectName(module)
+	if err != nil {
+		return err
+	}
+
+	user, err := user.Current()
 	if err != nil {
 		return err
 	}
 
 	data := struct {
-		Project      string
-		Port         int
-		Module       string
-		DatabaseURL  string
-		DatabaseName string
+		Project          string
+		Port             int
+		Module           string
+		DatabaseDriver   string
+		DatabaseName     string
+		DatabaseUser     string
+		DatabasePassword string
 	}{
-		Project:     projectName,
-		Port:        port,
-		Module:      module,
-		DatabaseURL: "postgres://ralf@localhost:5432/bookstore",
+		Project:        projectName,
+		Port:           port,
+		Module:         module,
+		DatabaseDriver: "postgres",
+		DatabaseName:   projectName,
+		DatabaseUser:   user.Username,
 	}
 
 	if err := createTemplateIfNotExists(projectRoot, data, "restkit.yml.txt", ".restkit.yml"); err != nil {

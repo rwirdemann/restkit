@@ -1,3 +1,7 @@
 port: 8080
 module: {{.Module}}
-databaseURL: {{.DatabaseURL}}
+databaseName:
+    driver: {{.DatabaseDriver}}
+    name: {{.DatabaseName}}
+    user: {{.DatabaseUser}}
+    password: {{.DatabasePassword}}

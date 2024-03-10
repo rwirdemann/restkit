@@ -6,6 +6,6 @@ import (
 )
 
 func TestProjectName(t *testing.T) {
-	n, _ := projectName("github.com/rwirdemann/bookstore")
+	n, _ := ProjectName("github.com/rwirdemann/bookstore")
 	assert.Equal(t, "bookstore", n)
 }

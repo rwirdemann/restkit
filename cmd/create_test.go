@@ -16,16 +16,20 @@ func TestCreateProjectDirectory(t *testing.T) {
 
 	path := "/go/src/github.com/rwirdemann/bookstore"
 	data := struct {
-		Project      string
-		Port         int
-		Module       string
-		DatabaseURL  string
-		DatabaseName string
+		Project          string
+		Port             int
+		Module           string
+		DatabaseDriver   string
+		DatabaseName     string
+		DatabaseUser     string
+		DatabasePassword string
 	}{
-		Project:     "bookstore",
-		Port:        8080,
-		Module:      "github.com/rwirdemann/bookstore",
-		DatabaseURL: "postgres://ralf@localhost:5432/bookstore",
+		Project:        "bookstore",
+		Port:           8080,
+		Module:         "github.com/rwirdemann/bookstore",
+		DatabaseDriver: "postgres",
+		DatabaseName:   "bookstore",
+		DatabaseUser:   "ralf",
 	}
 
 	mockFileSystem.EXPECT().Exists("/go/src/github.com/rwirdemann/bookstore").Return(false)

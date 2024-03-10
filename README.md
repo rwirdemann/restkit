@@ -76,3 +76,13 @@ maps incoming HTTP requests to internal services. Incoming adapter classes use t
 provided by the `ports.in`` package to delegate incoming requests to the suitable application
 service.
 
+# Database scripts
+
+```
+CREATE TABLE books
+(
+    id    serial PRIMARY KEY,
+    title VARCHAR(255) NOT NULL
+);
+```
+
