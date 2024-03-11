@@ -1,4 +1,4 @@
-package gotools
+package textx
 
 import (
 	"fmt"
