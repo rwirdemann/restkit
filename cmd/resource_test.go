@@ -74,10 +74,10 @@ func testAddResource(f bool) {
 		"\"net/http\"",
 		"\"github.com/rwirdemann/bookstore/application/services\"").Return(nil)
 
-	mockTemplate.EXPECT().Contains("main.go", "booksRepository := postgres.NewBooksRepository(dbpool)").Return(false, nil)
+	mockTemplate.EXPECT().Contains("main.go", "booksRepository := postgres.NewBooksRepository(db)").Return(false, nil)
 	mockTemplate.EXPECT().Insert("main.go",
 		"log.Printf(\"starting http service on port %d...\", c.Port)",
-		"booksRepository := postgres.NewBooksRepository(dbpool)\n"+
+		"booksRepository := postgres.NewBooksRepository(db)\n"+
 			"booksService := services.NewBooksService(booksRepository)\n"+
 			"booksAdapter := http2.NewBooksHandler(*booksService)\n"+
 			"\trouter.HandleFunc(\"/books\", booksAdapter.GetAll()).Methods(\"GET\")").Return(nil)

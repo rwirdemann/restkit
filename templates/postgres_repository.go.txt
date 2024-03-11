@@ -1,19 +1,25 @@
 package postgres
 
 import (
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jmoiron/sqlx"
 	"{{.Module}}/application/domain"
 	"{{.Module}}/ports/out"
+    "log"
 )
 
 type {{.Resource}}sRepository struct {
-	dbpool *pgxpool.Pool
+	db *sqlx.DB
 }
 
-func New{{.Resource}}sRepository(dbpool *pgxpool.Pool) out.{{.Resource}}sRepository {
-	return &{{.Resource}}sRepository{dbpool}
+func New{{.Resource}}sRepository(db *sqlx.DB) out.{{.Resource}}sRepository {
+	return &{{.Resource}}sRepository{db}
 }
 
 func (r {{.Resource}}sRepository) GetAll() ([]domain.{{.Resource}}, error) {
-	return []domain.{{.Resource}}{}, nil
+	{{.ResourceLowerCaps}}s := []domain.{{.Resource}} {}
+	err := r.db.Select(&{{.ResourceLowerCaps}}s, "SELECT * FROM {{.ResourceLowerCaps}}s")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return {{.ResourceLowerCaps}}s, nil
 }
