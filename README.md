@@ -18,7 +18,7 @@ rk create github.com/rwirdemann/bookstore
 cd $GOPATH/src/github.com/rwirdemann/bookstore
 
 # Add first resource
-rk add resource book
+rk add resource book title:string author:string
 
 # Update dependencies
 go mod tidy

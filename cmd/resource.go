@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/rwirdemann/restkit/textx"
 	"log"
 	"os"
+	"strings"
 	"unicode"
 
 	"github.com/rwirdemann/restkit/ports"
@@ -18,9 +20,23 @@ func init() {
 }
 
 var resourceCmd = &cobra.Command{
-	Use:   "resource name",
+	Use:   "resource name [attribute:type]*",
 	Short: "creates a resource",
-	Args:  cobra.ExactArgs(1),
+	Args: func(cmd *cobra.Command, args []string) error {
+		if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
+			return err
+		}
+
+		if strings.Contains(args[0], ":") {
+			return errors.New("invalid resource name")
+		}
+
+		if err := validateAttributes(args[1:]); err != nil {
+			return err
+		}
+
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := add(args[0]); err != nil {
 			return err

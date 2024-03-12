@@ -70,7 +70,7 @@ func create(module string, projectRoot string, port int) error {
 		return err
 	}
 
-	user, err := user.Current()
+	u, err := user.Current()
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func create(module string, projectRoot string, port int) error {
 		Module:         module,
 		DatabaseDriver: "postgres",
 		DatabaseName:   projectName,
-		DatabaseUser:   user.Username,
+		DatabaseUser:   u.Username,
 	}
 
 	if err := createTemplateIfNotExists(projectRoot, data, "restkit.yml.txt", ".restkit.yml"); err != nil {
