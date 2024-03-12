@@ -28,6 +28,9 @@ func validateAttributes(attributes []string) error {
 			return errors.New(fmt.Sprintf("attribute '%s' is of invalid format", a))
 		}
 		s := strings.Split(a, ":")
+		if isValidType(s[0]) {
+			return errors.New(fmt.Sprintf("attribute '%s' is has invalid name", a))
+		}
 		if !isValidType(s[1]) {
 			return errors.New(fmt.Sprintf("attribute '%s' is has invalid type", a))
 		}

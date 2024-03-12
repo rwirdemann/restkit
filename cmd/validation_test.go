@@ -13,10 +13,11 @@ func TestProjectName(t *testing.T) {
 func TestValidateAttributes(t *testing.T) {
 	assert.Nil(t, validateAttributes([]string{"title:string"}))
 	assert.Nil(t, validateAttributes([]string{"title:string", "author:string"}))
-
 	assert.Nil(t, validateAttributes([]string{"year:int"}))
 
+	assert.Error(t, validateAttributes([]string{"int:year"}))
 	assert.Error(t, validateAttributes([]string{"titlestring"}))
+	assert.Error(t, validateAttributes([]string{"title:stringx"}))
 	assert.Error(t, validateAttributes([]string{"title string"}))
 	assert.Error(t, validateAttributes([]string{"title"}))
 	assert.Error(t, validateAttributes([]string{"title;string"}))
