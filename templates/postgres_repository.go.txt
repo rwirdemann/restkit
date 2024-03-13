@@ -16,7 +16,7 @@ func New{{.Resource}}sRepository(db *sqlx.DB) out.{{.Resource}}sRepository {
 }
 
 func (r {{.Resource}}sRepository) GetAll() ([]domain.{{.Resource}}, error) {
-	{{.ResourceLowerCaps}}s := []domain.{{.Resource}} {}
+	var {{.ResourceLowerCaps}}s []domain.{{.Resource}}
 	err := r.db.Select(&{{.ResourceLowerCaps}}s, "SELECT * FROM {{.ResourceLowerCaps}}s")
 	if err != nil {
 		log.Fatal(err)
