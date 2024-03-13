@@ -99,6 +99,7 @@ func testAddResource(f bool) {
 		mockFileSystem.EXPECT().Exists("application/domain/book.go").Return(false)
 	}
 	mockTemplate.EXPECT().Create("resource.go.txt", "book.go", "application/domain", domainObjectData).Return(nil)
+	mockTemplate.EXPECT().Insert("application/domain/book.go", "}", "Title string `json:\"title\"`").Return(nil)
 
 	c := ports2.Config{
 		Module: "github.com/rwirdemann/bookstore",
@@ -144,7 +145,7 @@ func testAddResource(f bool) {
 
 	mockYml.EXPECT().ReadConfig().Return(ports2.Config{}, nil)
 
-	_ = add("book")
+	_ = add("book", []string{"title:string"})
 }
 
 func expectCreatePortFiles(f bool, portName string, templ string, out string, outPath string, portData struct {

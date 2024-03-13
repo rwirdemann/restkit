@@ -38,14 +38,14 @@ var resourceCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := add(args[0]); err != nil {
+		if err := add(args[0], args[1:]); err != nil {
 			return err
 		}
 		return nil
 	},
 }
 
-func add(resourceName string) error {
+func add(resourceName string, attributes []string) error {
 	// Check if current directory is a RESTkit's project root
 	if !fileSystem.Exists(".restkit.yml") {
 		return fmt.Errorf("current directory contains no .restkit.yml")
@@ -64,7 +64,7 @@ func add(resourceName string) error {
 		return err
 	}
 
-	if err := createDomainObject(resourceName); err != nil {
+	if err := createDomainObject(resourceName, attributes); err != nil {
 		return err
 	}
 
@@ -117,7 +117,7 @@ func createPostgresAdapter(resourceName string, config ports.Config) error {
 }
 
 func updateMain(resourceName string, config ports.Config) error {
-	// Import postgres adatper
+	// Import postgres adapter
 	if err := insertImportStatement(fmt.Sprintf("postgres \"%s/context/postgres\"", config.Module)); err != nil {
 		return err
 	}
@@ -195,7 +195,7 @@ func insertImportStatement(stmt string) error {
 	return nil
 }
 
-func createDomainObject(resourceName string) error {
+func createDomainObject(resourceName string, attributes []string) error {
 	// Create application dir if not exist
 	if err := createDirIfNotExists("application"); err != nil {
 		return err
@@ -217,6 +217,14 @@ func createDomainObject(resourceName string) error {
 		return err
 	}
 
+	fn := fmt.Sprintf("application/domain/%s.go", resourceName)
+	for _, a := range attributes {
+		attrs := strings.Split(a, ":")
+		fragment := fmt.Sprintf("%s %s `json:\"%s\"`", capitalize(attrs[0]), attrs[1], attrs[0])
+		if err := template.Insert(fn, "}", fragment); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

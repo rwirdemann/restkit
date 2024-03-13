@@ -16,9 +16,10 @@ func init() {
 }
 
 func Fmt() error {
-	log.Printf("cmd:    go fmt in %s", filesystem.Pwd())
-	cmd := fmt.Sprintf("go fmt %s", filesystem.Pwd())
+	log.Printf("cmd:    gofmt -s -w %s", filesystem.Pwd())
+	cmd := fmt.Sprintf("gofmt -d -w %s", filesystem.Pwd())
 	if _, err := exec.Command("bash", "-c", cmd).Output(); err != nil {
+		log.Fatalln(err)
 		return err
 	}
 
