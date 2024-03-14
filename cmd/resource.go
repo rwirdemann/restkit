@@ -11,7 +11,7 @@ import (
 
 	"github.com/rwirdemann/restkit/ports"
 
-	"github.com/rwirdemann/restkit/gotools"
+	"github.com/rwirdemann/restkit/cli"
 	"github.com/spf13/cobra"
 )
 
@@ -80,7 +80,7 @@ func add(resourceName string, attributes []string) error {
 		return err
 	}
 
-	if err := gotools.Fmt(); err != nil {
+	if err := cli.Fmt(); err != nil {
 		return err
 	}
 

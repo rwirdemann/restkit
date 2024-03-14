@@ -1,4 +1,4 @@
-package gotools
+package cli
 
 import (
 	"fmt"
