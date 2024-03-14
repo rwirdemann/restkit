@@ -1,16 +1,18 @@
 package adapter
 
 import (
+	"embed"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 	"text/template"
 
-	"github.com/gobuffalo/packr"
 	"github.com/rwirdemann/restkit/arrays"
-	"github.com/spf13/viper"
 )
+
+//go:embed templates
+var templates embed.FS
 
 type Template struct {
 }
@@ -65,18 +67,12 @@ func (t Template) Insert(filename string, before string, fragment string) error 
 }
 
 func (t Template) Create(templ string, out string, path string, data interface{}) error {
-	templatePath, err := templatePath()
+	f, err := templates.ReadFile(fmt.Sprintf("templates/%s", templ))
 	if err != nil {
 		return err
 	}
 
-	box := packr.NewBox(templatePath)
-	s, err := box.FindString(templ)
-	if err != nil {
-		return err
-	}
-
-	tmpl, err := template.New(templ).Parse(s)
+	tmpl, err := template.New(templ).Parse(string(f))
 	if err != nil {
 		return err
 	}
@@ -87,12 +83,4 @@ func (t Template) Create(templ string, out string, path string, data interface{}
 		return err
 	}
 	return tmpl.ExecuteTemplate(gomod, templ, data)
-}
-
-func templatePath() (string, error) {
-	gopath := viper.GetString("GOPATH")
-	if len(gopath) == 0 {
-		return "", fmt.Errorf("env %s not set", "GOPATH")
-	}
-	return fmt.Sprintf("%s/src/github.com/rwirdemann/restkit/templates", gopath), nil
 }

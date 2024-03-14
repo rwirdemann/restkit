@@ -30,16 +30,7 @@ go run main.go
 ## Build
 
 ```text
-go get github.com/gobuffalo/packr/packr
 make
-```
-
-## Configuration
-
-### Environment variables
-```
-# RESTKit template directory
-RESTKIT_TEMPLATES
 ```
 
 ## Understanding the structure of the generated API

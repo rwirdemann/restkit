@@ -12,7 +12,7 @@ var rootCmd = &cobra.Command{
 	Version: version,
 	Short:   "restkit - a simple CLI to generate rest apis",
 	Long: `restkit is a super fancy CLI 
-   
+
 One can use restkit to generate customized, postgres backed rest apis in minutes`,
 	Run: func(cmd *cobra.Command, args []string) {
 
