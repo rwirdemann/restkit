@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/rwirdemann/restkit/adapter"
 	"log"
 	"os"
 	"os/user"
@@ -65,6 +66,11 @@ func create(module string, projectRoot string, port int) error {
 		return err
 	}
 
+	migrationsRoot := fmt.Sprintf("%s/%s", projectRoot, "migrations")
+	if err := createDirIfNotExist(migrationsRoot); err != nil {
+		return err
+	}
+
 	projectName, err := ProjectName(module)
 	if err != nil {
 		return err
@@ -103,6 +109,13 @@ func create(module string, projectRoot string, port int) error {
 	}
 
 	if err := createTemplateIfNotExists(projectRoot, data, "main.go.txt", "main.go"); err != nil {
+		return err
+	}
+
+	fmt.Printf("TIME: %s\n", adapter.Time{}.TS())
+
+	out := fmt.Sprintf("%s_create_database.sql", time.TS())
+	if err := createTemplateIfNotExists(migrationsRoot, data, "create_database.sql.txt", out); err != nil {
 		return err
 	}
 
